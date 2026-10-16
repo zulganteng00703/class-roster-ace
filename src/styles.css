@@ -794,6 +794,8 @@ main.app-content { max-width: 1180px; padding: 48px 32px; }
 .portal-eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--primary); border-radius: 50%; }
 .portal-intro h2 { font-size: 48px; line-height: 1.2; margin-bottom: 18px; font-weight: 800; }
 .portal-intro h2 span { color: var(--primary); }
+.portal-intro h2 .brand-name { color: var(--text-main); letter-spacing: .04em; }
+.portal-intro h2 .brand-sub { font-size: .58em; font-weight: 700; letter-spacing: .02em; white-space: nowrap; }
 .portal-intro p { color: var(--text-muted); font-size: 15px; max-width: 580px; margin: auto; line-height: 1.9; }
 .role-cards-grid { gap: 22px; }
 .role-card { text-align: left; align-items: flex-start; padding: 28px; border: 1px solid var(--border-color); gap: 24px; position: relative; }
