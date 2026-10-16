@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
+import { findSchoolByCode } from '@/lib/schools';
 
 export const enterClassroom = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth])
@@ -13,9 +14,11 @@ export const enterClassroom = createServerFn({ method: 'POST' })
     if (roleError || !allowed) throw new Error('Silakan masuk sebagai guru.');
     const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
     if (data.action === 'create') {
-      if (!data.teacherName || !data.schoolName) throw new Error('Nama guru dan sekolah wajib diisi.');
-      const { error } = await supabaseAdmin.from('teacher_classrooms').insert({ code: data.code, teacher_name: data.teacherName, school_name: data.schoolName });
-      if (error) throw new Error(error.code === '23505' ? 'Kode kelas sudah digunakan. Pilih kode lain.' : 'Kelas belum dapat disimpan.');
+      if (!data.teacherName) throw new Error('Nama guru wajib diisi.');
+      const school = findSchoolByCode(data.code);
+      if (!school) throw new Error('Pilih sekolah dari daftar.');
+      const { error } = await supabaseAdmin.from('teacher_classrooms').upsert({ code: data.code, teacher_name: data.teacherName, school_name: school });
+      if (error) throw new Error('Kelas belum dapat disimpan.');
     }
     const { data: classroom, error } = await supabaseAdmin.from('teacher_classrooms').select('code,teacher_name,school_name').eq('code', data.code).single();
     if (error || !classroom) throw new Error('Kode kelas tidak ditemukan.');
