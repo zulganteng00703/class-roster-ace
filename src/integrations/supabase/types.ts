@@ -14,13 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      app_kv: {
+        Row: {
+          data: Json
+          key: string
+          updated_at: string
+        }
+        Insert: {
+          data?: Json
+          key: string
+          updated_at?: string
+        }
+        Update: {
+          data?: Json
+          key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      exam_results: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+        }
+        Relationships: []
+      }
+      teacher_classroom_accounts: {
+        Row: {
+          classroom_code: string
+          user_id: string
+        }
+        Insert: {
+          classroom_code: string
+          user_id: string
+        }
+        Update: {
+          classroom_code?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_classroom_accounts_classroom_code_fkey"
+            columns: ["classroom_code"]
+            isOneToOne: false
+            referencedRelation: "teacher_classrooms"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      teacher_classrooms: {
+        Row: {
+          code: string
+          created_at: string
+          school_name: string
+          teacher_name: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          school_name?: string
+          teacher_name: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          school_name?: string
+          teacher_name?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      save_classroom_exams: { Args: { incoming: Json }; Returns: undefined }
+      tka_has_role: { Args: { wanted: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
