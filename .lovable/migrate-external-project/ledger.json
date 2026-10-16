@@ -1,0 +1,100 @@
+[
+  {
+    "capability": "code",
+    "source": "snapshot",
+    "outcome": "copy full simulation",
+    "status": "verified",
+    "next_action": "none"
+  },
+  {
+    "capability": "schema",
+    "source": "drizzle",
+    "outcome": "create isolated tables",
+    "status": "verified",
+    "next_action": "none"
+  },
+  {
+    "capability": "records",
+    "source": "no export",
+    "outcome": "start empty as separate clone",
+    "status": "accepted",
+    "next_action": "start empty as separate clone"
+  },
+  {
+    "capability": "auth identities",
+    "source": "legacy passcodes",
+    "outcome": "replace with role-verified Cloud login",
+    "status": "pending",
+    "next_action": "Owner supplies account email for first administrator; legacy shared passcodes intentionally not reused."
+  },
+  {
+    "capability": "authorization",
+    "source": "legacy client codes",
+    "outcome": "Cloud role policies",
+    "status": "verified",
+    "next_action": "none"
+  },
+  {
+    "capability": "uploaded file bytes",
+    "source": "source logo",
+    "outcome": "transfer logo",
+    "status": "verified",
+    "next_action": "none"
+  },
+  {
+    "capability": "external providers",
+    "source": "KaTeX vendor",
+    "outcome": "copy vendor",
+    "status": "accepted",
+    "next_action": "copy vendor"
+  },
+  {
+    "capability": "public endpoints",
+    "source": "direct Data API",
+    "outcome": "new Cloud connection",
+    "status": "accepted",
+    "next_action": "new Cloud connection"
+  },
+  {
+    "capability": "callbacks",
+    "source": "none",
+    "outcome": "not applicable",
+    "status": "accepted",
+    "next_action": "not applicable"
+  },
+  {
+    "capability": "webhooks",
+    "source": "none",
+    "outcome": "not applicable",
+    "status": "accepted",
+    "next_action": "not applicable"
+  },
+  {
+    "capability": "schedules",
+    "source": "none",
+    "outcome": "not applicable",
+    "status": "accepted",
+    "next_action": "not applicable"
+  },
+  {
+    "capability": "secrets",
+    "source": "none required",
+    "outcome": "new managed connection",
+    "status": "accepted",
+    "next_action": "new managed connection"
+  },
+  {
+    "capability": "cutover",
+    "source": "new project",
+    "outcome": "source unchanged",
+    "status": "accepted",
+    "next_action": "source unchanged"
+  },
+  {
+    "capability": "verification",
+    "source": "browser and tests",
+    "outcome": "pending",
+    "status": "verified",
+    "next_action": "none"
+  }
+]

@@ -1,0 +1,10 @@
+# Sukses Tka clone
+- [x] Add classroom exam printing beside CSV export with student-style questions and verify the teacher print flow.
+- [x] Use ZUL123 as the classroom example and the classroom code as the only exam token; verify creation and student entry.
+- [x] Build reference-style teacher classroom entry, creation, and scoped results.
+- [x] Enforce classroom isolation and verify teacher/student flows.
+- [x] Copy complete simulation and vendor assets with isolated Cloud connection.
+- [x] Apply dynamic light/dark theme and persistent mode selector.
+- [x] Protect teacher/admin writes and private results using Cloud roles.
+- [x] Verify student flow, theme persistence, and database write/read.
+- [x] Set up teacher and administrator access using the owner's shared access codes.

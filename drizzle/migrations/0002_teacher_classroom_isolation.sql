@@ -1,0 +1,34 @@
+CREATE TABLE public.teacher_classrooms (code text PRIMARY KEY, teacher_name text NOT NULL, school_name text NOT NULL DEFAULT '', created_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT ON public.teacher_classrooms TO authenticated;
+GRANT ALL ON public.teacher_classrooms TO service_role;
+ALTER TABLE public.teacher_classrooms ENABLE ROW LEVEL SECURITY;
+CREATE TABLE public.teacher_classroom_accounts (user_id uuid PRIMARY KEY, classroom_code text NOT NULL REFERENCES public.teacher_classrooms(code));
+GRANT SELECT ON public.teacher_classroom_accounts TO authenticated;
+GRANT ALL ON public.teacher_classroom_accounts TO service_role;
+ALTER TABLE public.teacher_classroom_accounts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Own classroom account" ON public.teacher_classroom_accounts FOR SELECT TO authenticated USING (user_id = auth.uid());
+CREATE POLICY "Selected classroom" ON public.teacher_classrooms FOR SELECT TO authenticated USING (public.tka_has_role('admin') OR EXISTS (SELECT 1 FROM public.teacher_classroom_accounts a WHERE a.user_id = auth.uid() AND a.classroom_code = code));
+INSERT INTO public.teacher_classrooms(code, teacher_name) SELECT DISTINCT value->>'code', 'Kelas sebelumnya' FROM public.app_kv CROSS JOIN LATERAL jsonb_array_elements(data) WHERE key = 'tka_exam_classes' AND length(value->>'code') > 0 ON CONFLICT DO NOTHING;
+DROP POLICY "results read" ON public.exam_results;
+CREATE POLICY "Classroom results read" ON public.exam_results FOR SELECT TO authenticated USING (public.tka_has_role('admin') OR EXISTS (SELECT 1 FROM public.teacher_classroom_accounts a JOIN public.app_kv k ON k.key = 'tka_exam_classes' CROSS JOIN LATERAL jsonb_array_elements(k.data) e WHERE a.user_id = auth.uid() AND e->>'id' = exam_results.data->>'examId' AND coalesce(e->>'classroomCode',e->>'code') = a.classroom_code));
+DROP POLICY "kv insert" ON public.app_kv;
+DROP POLICY "kv update" ON public.app_kv;
+CREATE POLICY "Admin kv insert" ON public.app_kv FOR INSERT TO authenticated WITH CHECK (public.tka_has_role('admin') AND key IN ('tka_question_bank','tka_exam_classes'));
+CREATE POLICY "Admin kv update" ON public.app_kv FOR UPDATE TO authenticated USING (public.tka_has_role('admin') AND key IN ('tka_question_bank','tka_exam_classes')) WITH CHECK (public.tka_has_role('admin') AND key IN ('tka_question_bank','tka_exam_classes'));
+CREATE OR REPLACE FUNCTION public.save_classroom_exams(incoming jsonb) RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+DECLARE selected_code text; existing jsonb; merged jsonb;
+BEGIN
+ SELECT classroom_code INTO selected_code FROM public.teacher_classroom_accounts WHERE user_id = auth.uid();
+ IF selected_code IS NULL OR NOT public.tka_has_role('guru') THEN RAISE EXCEPTION 'Classroom access required'; END IF;
+ IF jsonb_typeof(incoming) <> 'array' THEN RAISE EXCEPTION 'Invalid exams'; END IF;
+ INSERT INTO public.app_kv(key,data) VALUES ('tka_exam_classes','[]') ON CONFLICT DO NOTHING;
+ SELECT data INTO existing FROM public.app_kv WHERE key = 'tka_exam_classes' FOR UPDATE;
+ IF EXISTS (SELECT 1 FROM jsonb_array_elements(incoming) e WHERE coalesce(e->>'classroomCode', e->>'code') IS DISTINCT FROM selected_code OR length(e->>'id') IS NULL OR length(e->>'code') IS NULL) THEN RAISE EXCEPTION 'Wrong classroom'; END IF;
+ IF EXISTS (SELECT 1 FROM jsonb_array_elements(incoming) n CROSS JOIN jsonb_array_elements(existing) old WHERE coalesce(old->>'classroomCode', old->>'code') <> selected_code AND (old->>'id' = n->>'id' OR old->>'code' = n->>'code')) THEN RAISE EXCEPTION 'Exam code already used'; END IF;
+ SELECT coalesce(jsonb_agg(e),'[]') INTO merged FROM jsonb_array_elements(existing) e WHERE coalesce(e->>'classroomCode',e->>'code') <> selected_code;
+ merged := merged || incoming;
+ IF (SELECT count(*) FROM jsonb_array_elements(merged)) <> (SELECT count(DISTINCT e->>'code') FROM jsonb_array_elements(merged) e) THEN RAISE EXCEPTION 'Duplicate exam code'; END IF;
+ UPDATE public.app_kv SET data = merged, updated_at = now() WHERE key = 'tka_exam_classes';
+END $$;
+REVOKE ALL ON FUNCTION public.save_classroom_exams(jsonb) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.save_classroom_exams(jsonb) TO authenticated, service_role;
