@@ -78,10 +78,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SimulasiTKA.id" },
+      { title: 'BATAMY "Banawa TKA Academy"' },
       { name: "description", content: "Persiapan Tes Kemampuan Akademik Sekolah Dasar" },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "SimulasiTKA.id" },
+      { property: "og:title", content: 'BATAMY "Banawa TKA Academy"' },
       { property: "og:description", content: "Persiapan Tes Kemampuan Akademik Sekolah Dasar" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

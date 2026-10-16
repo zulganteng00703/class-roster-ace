@@ -7,9 +7,9 @@ import { enterClassroom, saveClassroomExams } from "@/lib/classroom.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
-    { title: "SimulasiTKA.id — Platform Simulasi TKA" },
+    { title: 'BATAMY "Banawa TKA Academy" — Platform Simulasi TKA' },
     { name: "description", content: "Latihan Tes Kemampuan Akademik SD, bank soal Bahasa Indonesia dan Matematika, serta pemantauan hasil siswa." },
-    { property: "og:title", content: "SimulasiTKA.id — Platform Simulasi TKA" },
+    { property: "og:title", content: 'BATAMY "Banawa TKA Academy"' },
     { property: "og:description", content: "Ruang siswa, guru, dan administrator untuk persiapan TKA SD." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
@@ -70,5 +70,5 @@ function Index() {
     setReady(true);
     return () => { delete window.tkaCloud; };
   }, []);
-  return ready ? <iframe src="/simulasi.html" title="SimulasiTKA.id" className="fixed inset-0 h-full w-full border-0" /> : <div className="flex min-h-screen items-center justify-center text-primary">Memuat SimulasiTKA.id…</div>;
+  return ready ? <iframe src="/simulasi.html" title='BATAMY "Banawa TKA Academy"' className="fixed inset-0 h-full w-full border-0" /> : <div className="flex min-h-screen items-center justify-center text-primary">Memuat BATAMY "Banawa TKA Academy"…</div>;
 }
