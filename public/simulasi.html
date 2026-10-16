@@ -1,0 +1,3013 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Simulasi TKA SD</title>
+  <link rel="stylesheet" href="/vendor/katex/katex.min.css">
+  <script src="/vendor/katex/katex.min.js"></script>
+  <link id="appStyles" rel="stylesheet">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-container">
+      <a href="#" class="brand" onclick="navigateTo('portal'); return false;">
+        <img class="brand-logo brand-logo-light" src="/__l5e/assets-v1/f9376928-3289-4041-abe1-26287a8006ef/logo-light.png" alt="SimulasiTKA.id" height="44"><img class="brand-logo brand-logo-dark" src="/__l5e/assets-v1/9b5c76bf-473a-4169-9291-9a391aacb874/logo-dark.png" alt="SimulasiTKA.id" height="44">
+      </a>
+      <div class="header-nav" id="topNavControls"><button class="btn btn-outline btn-sm" id="signOutButton" hidden onclick="signOut()">Keluar</button>
+        <div class="theme-picker" aria-label="Tema tampilan">
+ <button class="btn" id="themeLight" title="Mode terang" aria-label="Mode terang" onclick="setTheme('light')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></svg></button>
+ <button class="btn" id="themeDark" title="Mode gelap" aria-label="Mode gelap" onclick="setTheme('dark')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 15a8 8 0 0 1-11-11 9 9 0 1 0 11 11z"/></svg></button>
+</div><span class="role-badge" id="currentRoleBadge">Portal belajar</span>
+        <button class="btn btn-outline btn-sm" id="btnNavSwitchRole" onclick="navigateTo('portal')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 17l5-5-5-5M19.8 12H9M10 3H4v18h6"/></svg>
+          Ganti Menu
+        </button>
+      </div>
+    </div>
+  </header>
+
+
+
+  <main class="app-content">
+    <!-- 1. VIEW PORTAL / ROLE SELECTOR -->
+    <section id="view-portal" class="view-section active">
+      <div class="portal-intro">
+        <div class="portal-eyebrow">TES KEMAMPUAN AKADEMIK · SEKOLAH DASAR</div>
+        <h2>SimulasiTKA.id<br><span>Siap belajar, siap melangkah.</span></h2>
+        <p>Persiapkan langkah terbaikmu melalui latihan Bahasa Indonesia dan Matematika. Pilih ruangmu untuk memulai.</p>
+      </div>
+      <div class="role-cards-grid">
+        <!-- Siswa Portal Card -->
+        <div class="role-card" tabindex="0" onkeydown="if(event.key==='Enter')this.click()" onclick="openStudentLoginModal()">
+          <div class="icon-wrapper">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          </div>
+          <div>
+            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 6px;">Ruang Siswa</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Masuk dengan kode kelas dari guru untuk mengerjakan ujian atau simulasi.</p>
+          </div>
+          <button class="btn btn-primary btn-lg" style="width: 100%; margin-top: auto;">Mulai Ujian <span aria-hidden="true">&rarr;</span></button>
+        </div>
+
+        <!-- Guru Portal Card -->
+        <div class="role-card" tabindex="0" onkeydown="if(event.key==='Enter')this.click()" onclick="openPasscodeModal('guru')">
+          <div class="icon-wrapper">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div>
+            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 6px;">Portal Guru</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Buat ujian kelas dan pantau analisis hasil siswa.</p>
+          </div>
+          <button class="btn btn-outline btn-lg" style="width: 100%; margin-top: auto;">Masuk Guru</button>
+        </div>
+
+        <!-- Admin Portal Card -->
+        <div class="role-card" tabindex="0" onkeydown="if(event.key==='Enter')this.click()" onclick="openPasscodeModal('admin')">
+          <div class="icon-wrapper">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <div>
+            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 6px;">Administrator</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Kelola Bank Soal mandiri (PG, MCMA, Benar/Salah), backup & restore data.</p>
+          </div>
+          <button class="btn btn-outline btn-lg" style="width: 100%; margin-top: auto;">Masuk Admin</button>
+        </div>
+      </div>
+      <div class="portal-bottom"><span>✓ Bahasa Indonesia</span><span>✓ Matematika</span><span>✓ Hasil &amp; pembahasan</span></div>
+    </section>
+
+    <!-- 2. VIEW ADMIN: KELOLA BANK SOAL -->
+    <section id="view-admin" class="view-section">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Bank Soal Admin
+          </h2>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Penyusunan butir soal TKA SD (Pilihan Ganda, Pilihan Ganda Kompleks, & Benar/Salah).</p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-outline btn-sm" onclick="exportQuestionBankJSON()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Ekspor JSON
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="openImportModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Impor JSON
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="openQuestionModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Tambah Soal Baru
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="resetStudentProgress()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Reset Progres Siswa
+          </button>
+        </div>
+      </div>
+
+      <!-- Overview 6 Paket Awal -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px;">
+        <div class="card" style="padding: 16px; border-left: 4px solid var(--primary);">
+          <div style="font-size: 13px; color: var(--text-muted);">Bahasa Indonesia</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--primary);" id="statCountBI">0 Soal</div>
+          <div style="font-size: 12px; color: var(--text-light);">Paket 1, 2, & 3</div>
+        </div>
+        <div class="card" style="padding: 16px; border-left: 4px solid var(--info);">
+          <div style="font-size: 13px; color: var(--text-muted);">Matematika</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--info);" id="statCountMat">0 Soal</div>
+          <div style="font-size: 12px; color: var(--text-light);">Paket 1, 2, & 3</div>
+        </div>
+        <div class="card" style="padding: 16px; border-left: 4px solid var(--success);">
+          <div style="font-size: 13px; color: var(--text-muted);">Total Bank Soal</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--success);" id="statCountTotal">0 Soal</div>
+          <div style="font-size: 12px; color: var(--text-light);">Tersimpan di Database Online</div>
+        </div>
+      </div>
+
+      <!-- Filters & Search -->
+      <div class="card" style="margin-bottom: 20px; padding: 16px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <div>
+            <label class="form-label">Filter Paket Soal</label>
+            <select class="form-control" id="filterAdminPackage" onchange="renderAdminQuestionList()">
+              <option value="ALL">Semua Paket Soal (6 Paket)</option>
+              <option value="bi_1">Bahasa Indonesia Paket 1</option>
+              <option value="bi_2">Bahasa Indonesia Paket 2</option>
+              <option value="bi_3">Bahasa Indonesia Paket 3</option>
+              <option value="mat_1">Matematika Paket 1</option>
+              <option value="mat_2">Matematika Paket 2</option>
+              <option value="mat_3">Matematika Paket 3</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Tipe Soal</label>
+            <select class="form-control" id="filterAdminType" onchange="renderAdminQuestionList()">
+              <option value="ALL">Semua Tipe Soal</option>
+              <option value="PG">Pilihan Ganda (PG)</option>
+              <option value="MCMA">Pilihan Ganda Kompleks (MCMA)</option>
+              <option value="BS">Mengkategorikan Benar/Salah</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Cari Teks Pertanyaan/Stimulus</label>
+            <input type="text" class="form-control" id="searchAdminText" placeholder="Ketik kata kunci pencarian..." oninput="renderAdminQuestionList()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Question Table / List -->
+      <div class="table-container">
+        <table class="data-table" id="adminQuestionTable">
+          <thead>
+            <tr>
+              <th style="width: 50px;">No</th>
+              <th>Paket & Tipe</th>
+              <th>Pratinjau Pertanyaan</th>
+              <th>Media</th>
+              <th>Bobot</th>
+              <th style="text-align: right; width: 160px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="adminQuestionTbody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div id="adminEmptyMsg" style="text-align: center; padding: 40px; color: var(--text-muted); display: none;">
+        <p style="font-size: 1.1rem; font-weight: 600;">Belum ada butir soal dalam bank soal.</p>
+        <p style="font-size: 0.9rem; margin-top: 6px;">Klik tombol <strong>"Tambah Soal Baru"</strong> untuk mengisi soal secara mandiri atau gunakan <strong>"Impor JSON"</strong>.</p>
+      </div>
+    </section>
+
+    <!-- 3. VIEW GURU: MANAJEMEN UJIAN & HASIL SISWA -->
+    <section id="view-guru" class="view-section">
+      <div class="teacher-heading">
+        <button class="btn teacher-icon-button" title="Kembali" aria-label="Kembali ke portal" onclick="teacherBack()">←</button>
+        <div class="teacher-heading-text"><h2>Dashboard Guru</h2><p id="teacherSubtitle">Akses atau buat kelas baru</p><p id="teacherIdentity" hidden></p></div>
+        <div id="teacherClassTools" class="teacher-class-tools" hidden>
+          <div class="teacher-code-label"><span>Kode Kelas</span><strong id="teacherActiveCode"></strong></div>
+          <button class="btn teacher-icon-button" title="Salin kode kelas" aria-label="Salin kode kelas" onclick="copyTeacherClassCode()"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button>
+          <button class="btn teacher-icon-button" title="Unduh hasil kelas" aria-label="Unduh hasil kelas" onclick="exportResultsToCSV()"><svg viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></svg></button>
+          <button class="btn teacher-switch" onclick="resetTeacherClass()">Ganti Kelas</button>
+        </div>
+        <button class="btn teacher-icon-button" id="teacherRefresh" title="Perbarui hasil" aria-label="Perbarui hasil" onclick="refreshTeacherPortal()"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 3M4 15l2 3a7 7 0 0 0 12-1"/></svg></button>
+      </div>
+      <div id="teacherEntry" class="teacher-entry">
+        <button class="btn teacher-choice" onclick="showTeacherForm('join')"><span class="teacher-symbol teacher-symbol-key"><svg viewBox="0 0 24 24"><circle cx="15" cy="8" r="5"/><path d="m11 12-8 8v-4l3-3h3l2-2"/></svg></span><span><strong>Masuk dengan Kode Kelas</strong><small>Kode kelas yang sudah ada</small></span></button>
+        <button class="btn teacher-choice" onclick="showTeacherForm('create')"><span class="teacher-symbol teacher-symbol-add"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg></span><span><strong>Buat Kelas Baru</strong><small>Buat kode kelas unik</small></span></button>
+      </div>
+      <form id="teacherClassForm" class="teacher-class-form" hidden onsubmit="submitTeacherClass(event)">
+        <span id="teacherFormSymbol" class="teacher-symbol teacher-symbol-key"><svg viewBox="0 0 24 24"><circle cx="15" cy="8" r="5"/><path d="m11 12-8 8v-4l3-3h3l2-2"/></svg></span>
+        <h3 id="teacherFormTitle">Masuk ke Kelas</h3><p id="teacherFormDesc">Masukkan kode kelas yang sudah dibuat sebelumnya</p>
+        <div id="teacherCreateFields" hidden>
+          <label class="sr-only" for="teacherName">Nama Guru</label><input class="form-control" id="teacherName" placeholder="Nama Guru" maxlength="200">
+          <label class="sr-only" for="teacherSchool">Nama Sekolah</label><input class="form-control" id="teacherSchool" placeholder="Nama Sekolah" maxlength="200">
+        </div>
+        <label class="sr-only" for="teacherClassCode">Kode kelas</label><input class="form-control teacher-code-input" id="teacherClassCode" placeholder="Masukkan kode kelas (contoh: ZUL123)" required pattern="[A-Za-z0-9]{4,12}" minlength="4" maxlength="12" autocomplete="off">
+        <p id="teacherClassError" class="teacher-error" role="alert" hidden></p>
+        <div class="teacher-form-actions"><button type="button" class="btn teacher-switch" onclick="resetTeacherClass()">Kembali</button><button type="submit" class="btn btn-primary" id="teacherClassSubmit">Masuk</button></div>
+      </form>
+      <div id="teacherDashboard" hidden>
+      <div id="teacherNoResults" class="teacher-no-results" hidden><span class="teacher-empty-symbol"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M2 21v-3a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v3M17 3a4 4 0 0 1 0 8M19 14a5 5 0 0 1 3 4v3"/></svg></span><h3>Belum Ada Hasil</h3><p>Bagikan kode kelas kepada siswa untuk menerima hasil ujian mereka.</p><strong id="teacherEmptyCode"></strong></div>
+      <div class="teacher-exam-action"><button class="btn btn-primary" onclick="openCreateExamModal()">+ Buat Ujian</button></div>
+      <div class="tabs-nav">
+        <button class="tab-btn active" id="tabGuruExamsBtn" onclick="switchGuruTab('exams')">Daftar Ujian / Kelas</button>
+        <button class="tab-btn" id="tabGuruResultsBtn" onclick="switchGuruTab('results')">Hasil & Analisis Nilai Siswa</button>
+      </div>
+
+      <!-- Tab Content 1: Daftar Ujian -->
+      <div id="tabGuruExamsContent">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Kode Kelas</th>
+                <th>Judul Ujian</th>
+                <th>Mata Pelajaran & Paket</th>
+                <th>Jml Soal & Durasi</th>
+                <th>KKM</th>
+                <th>Status</th>
+                <th style="text-align: right;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="guruExamListTbody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+        <div id="guruExamsEmptyMsg" style="text-align: center; padding: 40px; color: var(--text-muted); display: none;">
+          <p style="font-weight: 600;">Belum ada ujian yang dibuat oleh Guru.</p>
+          <p style="font-size: 0.9rem;">Belum ada ujian untuk kelas ini.</p>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: Hasil & Monitoring Siswa -->
+      <div id="tabGuruResultsContent" style="display: none;">
+        <!-- Ringkasan Statistik Nilai -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px;">
+          <div class="card" style="padding: 16px;">
+            <div style="font-size: 13px; color: var(--text-muted);">Total Peserta</div>
+            <div style="font-size: 1.5rem; font-weight: 800;" id="statTotalPeserta">0</div>
+          </div>
+          <div class="card" style="padding: 16px;">
+            <div style="font-size: 13px; color: var(--text-muted);">Rata-rata Nilai</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--info);" id="statRataNilai">0</div>
+          </div>
+          <div class="card" style="padding: 16px;">
+            <div style="font-size: 13px; color: var(--text-muted);">Nilai Tertinggi</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--success);" id="statNilaiTertinggi">0</div>
+          </div>
+          <div class="card" style="padding: 16px;">
+            <div style="font-size: 13px; color: var(--text-muted);">Nilai Terendah</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--danger);" id="statNilaiTerendah">0</div>
+          </div>
+          <div class="card" style="padding: 16px;">
+            <div style="font-size: 13px; color: var(--text-muted);">% Ketuntasan (KKM)</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);" id="statPersenTuntas">0%</div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Results -->
+        <div class="card" style="margin-bottom: 16px; padding: 16px;">
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; flex: 1;">
+              <select class="form-control" style="max-width: 260px;" id="filterResultExam" onchange="renderGuruResults()">
+                <option value="ALL">Semua Ujian</option>
+              </select>
+              <input type="text" class="form-control" style="max-width: 260px;" id="searchResultStudent" placeholder="Cari nama siswa..." oninput="renderGuruResults()">
+            </div>
+            <div class="teacher-export-actions">
+              <button class="btn btn-success btn-sm" onclick="exportResultsToCSV()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Ekspor Hasil ke CSV
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="openPrintExamModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6M6 18H3V9h18v9h-3M6 14h12v7H6z"/></svg>Cetak Soal</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Lengkap</th>
+                <th>Kelas & Sekolah</th>
+                <th>Ujian / Kode</th>
+                <th>Waktu Mulai - Selesai</th>
+                <th>Durasi</th>
+                <th>Nilai Akhir</th>
+                <th>Status KKM</th>
+              </tr>
+            </thead>
+            <tbody id="guruResultsTbody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+        <div id="guruResultsEmptyMsg" style="text-align: center; padding: 40px; color: var(--text-muted); display: none;">
+          <p style="font-weight: 600;">Belum ada siswa yang menyelesaikan ujian.</p>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- 4. VIEW SISWA: HALAMAN INSTRUKSI UJIAN -->
+    <section id="view-siswa-instruksi" class="view-section">
+      <div class="card" style="max-width: 780px; margin: 0 auto; padding: 32px;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div class="badge badge-primary" style="margin-bottom: 10px; font-size: 14px;">Konfirmasi Peserta & Ujian</div>
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--primary);" id="instrExamTitle">Ujian Tes Kemampuan Akademik</h2>
+          <p style="color: var(--text-muted);" id="instrExamSubtitle">Mata Pelajaran & Paket Soal</p>
+        </div>
+
+        <div style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 24px;">
+          <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--text-main);">Data Peserta Ujian:</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 14px;">
+            <div><strong>Nama Siswa:</strong> <span id="instrStudentName">-</span></div>
+            <div><strong>Kelas:</strong> <span id="instrStudentClass">-</span></div>
+            <div><strong>Asal Sekolah:</strong> <span id="instrStudentSchool">-</span></div>
+            <div><strong>Kode Kelas:</strong> <span id="instrExamCode" class="badge badge-primary">-</span></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 28px;">
+          <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 10px;">Petunjuk Pengerjaan:</h4>
+          <ul style="padding-left: 20px; font-size: 14px; color: var(--text-main); line-height: 1.8;">
+            <li>Ujian terdiri atas <strong id="instrQuestionCount">0</strong> butir soal dengan alokasi waktu <strong id="instrDuration">0</strong> menit.</li>
+            <li>Jawaban Anda akan <strong>tersimpan secara otomatis</strong> setiap kali Anda memilih atau mengubah pilihan.</li>
+            <li>Jika koneksi terputus atau layar tidak sengaja tertutup, timer akan melanjutkan sisa waktu Anda dari memori lokal.</li>
+            <li>Periksa kembali status warna nomor soal: <span style="color:var(--success); font-weight:bold;">Hijau</span> (Terjawab), <span style="color:var(--warning); font-weight:bold;">Kuning</span> (Ragu-ragu), dan Abu-abu (Belum Terjawab).</li>
+            <li>Pastikan klik tombol <strong>"Kirim Ujian"</strong> jika telah selesai memeriksa seluruh jawaban.</li>
+          </ul>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn btn-secondary" onclick="cancelStudentExam()">Batal & Keluar</button>
+          <button class="btn btn-primary btn-lg" onclick="startStudentExamSession()">
+            Mulai Ujian Sekarang &rarr;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. VIEW SISWA: RUANG UJIAN (CBT EXAM ROOM) -->
+    <section id="view-siswa-exam" class="view-section">
+      <!-- Exam Header with Timer & Autosave indicator -->
+      <div class="exam-header-bar">
+        <div>
+          <div style="font-size: 0.85rem; color: var(--text-muted);" id="examRoomSubject">Mata Pelajaran</div>
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--primary);" id="examRoomTitle">Judul Ujian</h3>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">
+            Peserta: <strong id="examRoomStudentName">Siswa</strong> (<span id="examRoomStudentClass">Kelas</span>)
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="text-align: right;">
+            <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; justify-content: flex-end; gap: 4px;">
+              <span id="autosaveDot" style="width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block;"></span>
+              <span id="autosaveStatusText">Tersimpan otomatis</span>
+            </div>
+            <div style="font-size: 11px; color: var(--text-light);" id="autosaveTimestamp">-</div>
+          </div>
+          <div class="exam-timer-box" id="examTimerDisplay">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="examTimerText">00:00:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-wrapper">
+        <!-- Main Question Card Area -->
+        <div class="question-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">Soal Nomor <span id="displayQuestionIndex">1</span></span>
+              <span class="badge badge-secondary" id="displayQuestionTypeBadge">Pilihan Ganda</span>
+            </div>
+            <div>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--warning);">
+                <input type="checkbox" id="chkReviewFlag" onchange="toggleFlagQuestion()" style="width: 18px; height: 18px; accent-color: var(--warning);">
+                Tandai Ragu-ragu
+              </label>
+            </div>
+          </div>
+
+          <!-- Stimulus Reading & Stimulus Image -->
+          <div id="stimulusSection" class="stimulus-container" style="display: none;">
+            <div style="font-weight: 700; font-size: 13px; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0;">Wacana / Stimulus:</div>
+            <div id="stimulusTextDisplay" style="white-space: pre-line;"></div>
+            <div id="stimulusImgWrapper" class="image-preview-box" style="display: none;">
+              <img id="stimulusImgDisplay" src="" alt="Gambar Stimulus" onclick="zoomImage(this.src)">
+              <button type="button" class="image-zoom-btn" onclick="zoomImage(document.getElementById('stimulusImgDisplay').src)">Perbesar &oplus;</button>
+              <div class="img-fail-msg" id="stimulusImgFail">Gagal memuat gambar stimulus. Periksa URL gambar.</div>
+            </div>
+          </div>
+
+          <!-- Question Body & Question Image -->
+          <div style="font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; line-height: 1.6;" id="questionTextDisplay">
+            Pertanyaan akan muncul di sini...
+          </div>
+          <div id="questionImgWrapper" class="image-preview-box" style="display: none;">
+            <img id="questionImgDisplay" src="" alt="Gambar Pertanyaan" onclick="zoomImage(this.src)">
+            <button type="button" class="image-zoom-btn" onclick="zoomImage(document.getElementById('questionImgDisplay').src)">Perbesar &oplus;</button>
+            <div class="img-fail-msg" id="questionImgFail">Gagal memuat gambar soal.</div>
+          </div>
+
+          <!-- Answer Input Area (PG, MCMA, or Benar/Salah) -->
+          <p id="questionInstructionDisplay" class="question-instruction"></p>
+          <div id="answersContainer" style="margin-top: 20px;">
+            <!-- Options dynamically rendered here -->
+          </div>
+
+          <!-- Question Navigation Buttons -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 12px;">
+            <button class="btn btn-secondary btn-lg" id="btnPrevQuestion" onclick="goToPrevQuestion()">
+              &larr; Sebelumnya
+            </button>
+            <button class="btn btn-primary btn-lg" id="btnNextQuestion" onclick="goToNextQuestion()">
+              Berikutnya &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- Sidebar: Number Palette & Submit Button -->
+        <div>
+          <div class="card" style="padding: 18px;">
+            <div class="card-header" style="margin-bottom: 12px; padding-bottom: 8px;">
+              <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-main);">Navigasi Nomor Soal</h4>
+              <span class="badge badge-primary" id="paletteAnsweredCount">0/0</span>
+            </div>
+
+            <!-- Legend -->
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 12px; color: var(--text-muted);">
+              <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; background: var(--success); border-radius: 2px;"></span> Terjawab</span>
+              <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; background: var(--warning); border-radius: 2px;"></span> Ragu</span>
+              <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 10px; height: 10px; background: var(--border-color); border-radius: 2px;"></span> Belum</span>
+            </div>
+
+            <div class="palette-grid" id="questionPaletteGrid">
+              <!-- Rendered by JS -->
+            </div>
+
+            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+              <button class="btn btn-primary btn-lg" style="width: 100%; font-weight: 800;" onclick="confirmFinishExam()">
+                Kirim Ujian Selesai
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. VIEW SISWA: HASIL UJIAN / SELESAI -->
+    <section id="view-siswa-selesai" class="view-section">
+      <div class="card" style="max-width: 800px; margin: 0 auto; padding: 32px; text-align: center;">
+        <div style="width: 80px; height: 80px; background: var(--success-light); color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 38px;">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h2 style="font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">Ujian Berhasil Dikirim!</h2>
+        <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 24px;">Jawaban Anda telah tersimpan dan dinilai oleh sistem.</p>
+
+        <!-- Result Card Box (Conditional if showScore is enabled) -->
+        <div id="scoreDisplayCard" style="background: var(--bg-body); border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; display: none;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; align-items: center;">
+            <div>
+              <div style="font-size: 13px; color: var(--text-muted);">Nilai Akhir Anda</div>
+              <div style="font-size: 3.2rem; font-weight: 900; color: var(--primary);" id="studentFinalScore">0</div>
+            </div>
+            <div>
+              <div style="font-size: 13px; color: var(--text-muted);">Status Ketuntasan</div>
+              <div id="studentPassBadge" class="badge badge-success" style="font-size: 1.1rem; padding: 8px 16px; margin-top: 6px;">TUNTAS</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">KKM Ujian: <span id="studentKkmDisplay">75</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="scoreHiddenNotice" style="background: var(--surface-muted); padding: 18px; border-radius: var(--radius-md); margin-bottom: 24px; display: none;">
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Pemberitahuan: Guru mengatur agar nilai dan pembahasan tidak ditampilkan langsung kepada siswa. Silakan hubungi Guru Anda untuk pengumuman hasil ujian.
+          </p>
+        </div>
+
+        <!-- Itemized Discussion / Review (if showDiscussion is enabled) -->
+        <div id="examReviewSection" style="text-align: left; margin-top: 32px; display: none;">
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 16px;">Pembahasan Soal & Kunci Jawaban</h3>
+          <div id="examReviewItemsList" style="display: flex; flex-direction: column; gap: 18px;">
+            <!-- Review items dynamically appended -->
+          </div>
+        </div>
+
+        <div style="margin-top: 32px;">
+          <button class="btn btn-primary btn-lg" onclick="navigateTo('portal')">Kembali ke Halaman Utama</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="printExamModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="printExamTitle">
+    <div class="modal-box modal-lg">
+      <div class="modal-header"><h3 id="printExamTitle">Cetak Soal</h3><button class="btn btn-outline btn-sm" aria-label="Tutup cetak soal" onclick="closeModal('printExamModal')">&times;</button></div>
+      <div class="modal-body">
+        <label class="form-label" for="printExamSelect">Pilih ujian kelas</label>
+        <select id="printExamSelect" class="form-control" onchange="prepareExamPrint()"></select>
+        <p class="print-status" id="printExamStatus" role="status"></p>
+        <div id="printExamPreview"></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('printExamModal')">Batal</button><button id="printExamButton" class="btn btn-primary" disabled onclick="printSelectedExam()">Cetak / Simpan PDF</button></div>
+    </div>
+  </div>
+  <!-- MODAL: ROLE PASSCODE LOGIN -->
+  <div class="modal-overlay" id="passcodeModal">
+    <div class="modal-box" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.15rem;" id="passcodeModalTitle">Kode Akses</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('passcodeModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;" id="passcodeModalDesc">
+          Masukkan kode akses untuk membuka dashboard.
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="inputPasscode">Kode akses</label>
+          <input type="password" class="form-control" id="inputPasscode" placeholder="Masukkan kode akses" autocomplete="off" onkeydown="if(event.key==='Enter')submitPasscode()">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('passcodeModal')">Batal</button>
+        <button class="btn btn-primary" id="passcodeSubmitBtn" onclick="submitPasscode()">Masuk &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SISWA LOGIN FORM -->
+  <div class="modal-overlay" id="studentLoginModal">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.2rem; color: var(--primary);">Masuk Ruang Ujian Siswa</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('studentLoginModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="studentLoginForm" onsubmit="handleStudentLogin(event)">
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap Siswa: <span style="color:var(--danger)">*</span></label>
+            <input type="text" class="form-control" id="sLoginName" required placeholder="Contoh: Ahmad Rizky Pratama">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Kelas: <span style="color:var(--danger)">*</span></label>
+              <input type="text" class="form-control" id="sLoginClass" required placeholder="Contoh: 5A / 6B">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kode Kelas / Token Ujian: <span style="color:var(--danger)">*</span></label>
+              <input type="text" class="form-control" id="sLoginCode" required maxlength="12" style="text-transform: uppercase; font-weight: 800; letter-spacing: 0;" placeholder="ZUL123">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Asal Sekolah: <span style="color:var(--danger)">*</span></label>
+            <input type="text" class="form-control" id="sLoginSchool" required placeholder="Contoh: SDN 4 Banawa">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Mata Pelajaran: <span style="color:var(--danger)">*</span></label>
+              <select class="form-control" id="sLoginSubject" required onchange="updateStudentLoginPackageOptions()">
+                <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                <option value="Matematika">Matematika</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Paket Soal: <span style="color:var(--danger)">*</span></label>
+              <select class="form-control" id="sLoginPackage" required>
+                <!-- populated by JS -->
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 10px;">
+            Periksa Data & Masuk Ujian &rarr;
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FORM SOAL ADMIN (CRUD) -->
+  <div class="modal-overlay" id="questionEditorModal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.2rem; color: var(--primary);" id="questionEditorTitle">Tambah Soal Baru</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('questionEditorModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="questionEditorForm" onsubmit="saveQuestionFromEditor(event)">
+          <input type="hidden" id="editQuestionId">
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Pilih Paket Soal: <span style="color:var(--danger)">*</span></label>
+              <select class="form-control" id="qEditPackage" required>
+                <option value="bi_1">Bahasa Indonesia Paket 1</option>
+                <option value="bi_2">Bahasa Indonesia Paket 2</option>
+                <option value="bi_3">Bahasa Indonesia Paket 3</option>
+                <option value="mat_1">Matematika Paket 1</option>
+                <option value="mat_2">Matematika Paket 2</option>
+                <option value="mat_3">Matematika Paket 3</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tipe Soal: <span style="color:var(--danger)">*</span></label>
+              <select class="form-control" id="qEditType" required onchange="handleQuestionTypeChange()">
+                <option value="PG">A. Pilihan Ganda (PG) - 1 Kunci Benar</option>
+                <option value="MCMA">B. Pilihan Ganda Kompleks (MCMA) - Multi Kunci</option>
+                <option value="BS">C. Mengkategorikan Benar / Salah (3 Pernyataan)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bobot Nilai: <span style="color:var(--danger)">*</span></label>
+              <input type="number" class="form-control" id="qEditWeight" required min="1" max="100" value="1">
+            </div>
+          </div>
+
+          <!-- Stimulus Reading & Image -->
+          <div style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Stimulus / Bacaan (Opsional)</h4>
+            <div class="form-group">
+              <label class="form-label">Teks Stimulus (Paragraf/Cerita/Data):</label>
+              <textarea class="form-control" id="qEditStimulusText" placeholder="Tuliskan teks bacaan atau stimulus di sini jika ada..."></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">URL Gambar Stimulus:</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="url" class="form-control" id="qEditStimulusImg" placeholder="https://contoh.com/gambar-stimulus.jpg" oninput="previewEditorImage('qEditStimulusImg', 'previewStimulusImg')">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="clearImageUrl('qEditStimulusImg', 'previewStimulusImg')">Hapus URL</button>
+              </div>
+              <div class="image-preview-box" id="previewStimulusImg" style="display: none; margin-top: 8px;">
+                <img src="" alt="Pratinjau Stimulus" onerror="handleImageError(this)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Question Text & Question Image -->
+          <div class="form-group">
+            <label class="form-label">Teks Pertanyaan: <span style="color:var(--danger)">*</span></label>
+            <textarea class="form-control" id="qEditQuestionText" placeholder="Tuliskan butir pertanyaan secara jelas..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL Gambar Pertanyaan (Opsional):</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="url" class="form-control" id="qEditQuestionImg" placeholder="https://contoh.com/gambar-soal.jpg" oninput="previewEditorImage('qEditQuestionImg', 'previewQuestionImg')">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="clearImageUrl('qEditQuestionImg', 'previewQuestionImg')">Hapus URL</button>
+            </div>
+            <div class="image-preview-box" id="previewQuestionImg" style="display: none; margin-top: 8px;">
+              <img src="" alt="Pratinjau Soal" onerror="handleImageError(this)">
+            </div>
+          </div>
+
+          <!-- Dynamic Options Section -->
+          <div id="editorOptionsContainer" style="margin-top: 16px;">
+            <!-- Rendered by JS according to Type (PG, MCMA, or BS) -->
+          </div>
+
+          <!-- Discussion / Pembahasan -->
+          <div class="form-group" style="margin-top: 20px;">
+            <label class="form-label">Pembahasan & Penjelasan Kunci Jawaban:</label>
+            <textarea class="form-control" id="qEditDiscussion" placeholder="Tuliskan pembahasan lengkap agar siswa dapat mempelajari konsepnya..."></textarea>
+          </div>
+
+          <div class="modal-footer" style="padding-left: 0; padding-right: 0;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('questionEditorModal')">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Butir Soal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: GURU BUAT / EDIT UJIAN -->
+  <div class="modal-overlay" id="examManageModal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.2rem; color: var(--primary);" id="examManageTitle">Buat Ujian / Kelas Baru</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('examManageModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="examManageForm" onsubmit="saveExamSettings(event)">
+          <input type="hidden" id="editExamId">
+
+          <div class="form-group">
+            <label class="form-label">Judul Ujian / Penilaian: <span style="color:var(--danger)">*</span></label>
+            <input type="text" class="form-control" id="examFormTitle" required placeholder="Contoh: Penilaian Harian TKA Bab 1">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Mata Pelajaran: <span style="color:var(--danger)">*</span></label>
+              <select class="form-control" id="examFormSubject" required onchange="handleExamSubjectChange()">
+                <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                <option value="Matematika">Matematika</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pilih Paket Soal: <span style="color:var(--danger)">*</span></label>
+              <select class="form-control" id="examFormPackage" required onchange="updateAvailableQuestionCountLabel()">
+                <!-- Populated by JS -->
+              </select>
+            </div>
+          </div>
+
+          <div style="background: var(--surface-muted); padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 14px; font-size: 13px;">
+            Jumlah soal tersedia dalam paket terpilih: <strong id="examAvailableCount" style="color: var(--primary);">0 Soal</strong>
+            <span id="examEmptyWarning" style="color: var(--danger); font-weight: bold; margin-left: 8px; display: none;">(Peringatan: Paket masih kosong! Harap isi bank soal dahulu).</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Jumlah Soal Diambil:</label>
+              <input type="number" class="form-control" id="examFormQuestionCount" required min="1" value="10">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Durasi (Menit):</label>
+              <input type="number" class="form-control" id="examFormDuration" required min="5" max="300" value="30">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Standar KKM (0-100):</label>
+              <input type="number" class="form-control" id="examFormKkm" required min="0" max="100" value="75">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Jadwal Mulai Ujian:</label>
+              <input type="datetime-local" class="form-control" id="examFormStartDate" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Jadwal Selesai Ujian:</label>
+              <input type="datetime-local" class="form-control" id="examFormEndDate" required>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+            <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px;">Pengaturan Tambahan:</div>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="examFormShuffle" checked style="width: 18px; height: 18px;">
+                Acak Urutan Nomor Soal untuk Siswa
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="examFormShowScore" checked style="width: 18px; height: 18px;">
+                Tampilkan Nilai Akhir Langsung kepada Siswa Setelah Selesai
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="examFormShowDiscussion" checked style="width: 18px; height: 18px;">
+                Tampilkan Pembahasan Soal Kepada Siswa Setelah Selesai
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="examFormStatusOpen" checked style="width: 18px; height: 18px;">
+                Status Ujian Terbuka (Aktif / Siswa Dapat Mengerjakan)
+              </label>
+            </div>
+          </div>
+
+          <div class="modal-footer" style="padding-left: 0; padding-right: 0;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('examManageModal')">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Pengaturan Ujian</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PREVIEW QUESTION (Admin) -->
+  <div class="modal-overlay" id="previewQuestionModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.15rem; color: var(--primary);">Pratinjau Butir Soal</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('previewQuestionModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="previewQuestionBody">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('previewQuestionModal')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="studentAnalysisModal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.15rem; color: var(--primary);">Analisis Hasil Siswa per Butir Soal</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('studentAnalysisModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="studentAnalysisBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('studentAnalysisModal')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: IMAGE LIGHTBOX ZOOM -->
+  <div class="modal-overlay" id="imageZoomModal" onclick="closeModal('imageZoomModal')">
+    <div style="max-width: 90vw; max-height: 90vh; position: relative;">
+      <img id="zoomedImageEl" src="" alt="Zoomed" style="max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
+    </div>
+  </div>
+
+  <!-- MODAL: IMPORT JSON -->
+  <div class="modal-overlay" id="importJsonModal">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.15rem;">Impor Bank Soal dari JSON</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('importJsonModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 14px;">
+          Pilih file berkas JSON cadangan bank soal yang valid.
+        </p>
+        <div class="form-group">
+          <input type="file" id="importJsonFileInput" accept=".json" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Metode Penggabungan:</label>
+          <select class="form-control" id="importJsonMode">
+            <option value="merge">Gabungkan dengan soal yang ada saat ini</option>
+            <option value="replace">Ganti seluruh soal (Hapus bank soal lama)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('importJsonModal')">Batal</button>
+        <button class="btn btn-primary" onclick="processImportJSON()">Mulai Impor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: KONFIRMASI PENGIRIMAN UJIAN (Finish Exam Confirmation) -->
+  <div class="modal-overlay" id="finishConfirmModal">
+    <div class="modal-box" style="max-width: 460px;">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.15rem; color: var(--primary);">Konfirmasi Pengiriman Ujian</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('finishConfirmModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 15px; margin-bottom: 16px;">
+          Apakah Anda yakin ingin menyelesaikan dan mengirim seluruh lembar jawaban?
+        </p>
+        <div style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span>Soal Terjawab:</span>
+            <strong style="color: var(--success);" id="confirmAnsweredCount">0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span>Soal Belum Terjawab:</span>
+            <strong style="color: var(--danger);" id="confirmUnansweredCount">0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Soal Ditandai Ragu-ragu:</span>
+            <strong style="color: var(--warning);" id="confirmFlaggedCount">0</strong>
+          </div>
+        </div>
+        <p style="font-size: 13px; color: var(--danger); font-weight: 600;">
+          Setelah dikonfirmasi, Anda tidak dapat mengubah jawaban kembali.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('finishConfirmModal')">Periksa Kembali</button>
+        <button class="btn btn-primary" onclick="executeSubmitExam()">Ya, Kirim Sekarang</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENERIC CUSTOM ALERT/CONFIRM MODAL -->
+  <div class="modal-overlay" id="customAlertModal">
+    <div class="modal-box" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.1rem;" id="customAlertTitle">Informasi</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('customAlertModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="customAlertMessage" style="font-size: 15px; color: var(--text-main);">
+      </div>
+      <div class="modal-footer" id="customAlertFooter">
+        <button class="btn btn-primary" onclick="closeModal('customAlertModal')">Mengerti</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- MANDATORY FOOTER -->
+  <footer class="app-footer">
+    Dikembangkan oleh <span class="footer-highlight">Zulkifli, S.Pd., M.Pd</span> - SDN 4 Banawa
+  </footer>
+
+  <script>
+    // CONSTANTS & STORAGE KEYS
+    const STORAGE_KEYS = {
+      QUESTIONS: 'tka_question_bank',
+      EXAMS: 'tka_exam_classes',
+      RESULTS: 'tka_student_results',
+      ACTIVE_SESSION: 'tka_active_session'
+    };
+
+
+
+    // 6 INITIAL PACKAGES DEFINED BY SYSTEM (Admin enters questions into them)
+    const PACKAGES_CONFIG = [
+      { id: 'bi_1', subject: 'Bahasa Indonesia', name: 'Bahasa Indonesia Paket 1' },
+      { id: 'bi_2', subject: 'Bahasa Indonesia', name: 'Bahasa Indonesia Paket 2' },
+      { id: 'bi_3', subject: 'Bahasa Indonesia', name: 'Bahasa Indonesia Paket 3' },
+      { id: 'mat_1', subject: 'Matematika', name: 'Matematika Paket 1' },
+      { id: 'mat_2', subject: 'Matematika', name: 'Matematika Paket 2' },
+      { id: 'mat_3', subject: 'Matematika', name: 'Matematika Paket 3' }
+    ];
+
+    let currentRole = 'portal'; // 'portal' | 'admin' | 'guru' | 'siswa'
+    let timerInterval = null;
+    let pendingExamData = null; // Stored student verified login data before instruction screen
+
+    // ===== CLOUD DATABASE LAYER =====
+    const CLOUD_URL = '';
+    async function bridgeReady() {
+      while (!parent.tkaCloud) await new Promise(resolve => setTimeout(resolve, 30));
+      return parent.tkaCloud;
+    }
+    async function cloudFetch(path, init) { return (await bridgeReady()).request(path, init); }
+    const CLOUD_KV = [STORAGE_KEYS.QUESTIONS, STORAGE_KEYS.EXAMS];
+    const cloudCache = {};
+    cloudCache[STORAGE_KEYS.QUESTIONS] = [];
+    cloudCache[STORAGE_KEYS.EXAMS] = [];
+    cloudCache[STORAGE_KEYS.RESULTS] = [];
+    function cloudHeaders(extra) {
+      return Object.assign({ 'Content-Type': 'application/json' }, extra || {});
+    }
+    async function cloudRefresh() {
+      try {
+        const [kvRes, rRes] = await Promise.all([
+          cloudFetch(CLOUD_URL + '/app_kv?select=key,data', { headers: cloudHeaders(), cache: 'no-store' }),
+          cloudFetch(CLOUD_URL + '/exam_results?select=data&order=created_at.asc&limit=10000', { headers: cloudHeaders(), cache: 'no-store' })
+        ]);
+        if (!kvRes.ok || !rRes.ok) throw new Error('HTTP ' + kvRes.status + '/' + rRes.status);
+        const kv = await kvRes.json();
+        kv.forEach(row => { if (CLOUD_KV.includes(row.key)) cloudCache[row.key] = Array.isArray(row.data) ? row.data : []; });
+        cloudCache[STORAGE_KEYS.RESULTS] = (await rRes.json()).map(r => r.data);
+        return true;
+      } catch (err) {
+        console.error('Gagal memuat data cloud', err);
+        showToast('Gagal terhubung ke server. Periksa koneksi internet.', 'error');
+        return false;
+      }
+    }
+    async function cloudSaveKV(key, data) {
+      try {
+        if (key === STORAGE_KEYS.EXAMS && currentRole === 'guru') {
+          await (await bridgeReady()).saveExams(data.filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code));
+          return true;
+        }
+        const res = await cloudFetch(CLOUD_URL + '/app_kv?on_conflict=key', {
+          method: 'POST',
+          headers: cloudHeaders({ 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
+          body: JSON.stringify({ key, data, updated_at: new Date().toISOString() })
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return true;
+      } catch (err) {
+        console.error('Gagal menyimpan ke cloud', err);
+        showToast(err.message || 'Gagal menyimpan ke server! Periksa koneksi lalu ulangi.', 'error');
+        return false;
+      }
+    }
+    async function cloudSaveResult(record, attempt = 0) {
+      try {
+        const res = await cloudFetch(CLOUD_URL + '/exam_results', {
+          method: 'POST',
+          headers: cloudHeaders({ 'Prefer': 'return=minimal' }),
+          body: JSON.stringify({ id: record.id, data: record })
+        });
+        if (!res.ok && res.status !== 409) throw new Error('HTTP ' + res.status);
+        localStorage.removeItem('tka_pending_results_' + record.id);
+        const own = JSON.parse(localStorage.getItem('tka_own_results') || '[]');
+        if (!own.some(r => r.id === record.id)) { own.push(record); localStorage.setItem('tka_own_results', JSON.stringify(own)); }
+        return true;
+      } catch (err) {
+        console.error('Gagal mengirim hasil', err);
+        localStorage.setItem('tka_pending_results_' + record.id, JSON.stringify(record));
+        if (attempt < 5) setTimeout(() => cloudSaveResult(record, attempt + 1), 3000 * (attempt + 1));
+        else showToast('Hasil ujian belum terkirim ke server. Jangan hapus data browser; akan dicoba lagi saat halaman dibuka.', 'warning');
+        return false;
+      }
+    }
+    function retryPendingResults() {
+      Object.keys(localStorage).filter(k => k.startsWith('tka_pending_results_')).forEach(k => {
+        try { cloudSaveResult(JSON.parse(localStorage.getItem(k))); } catch (e) {}
+      });
+    }
+
+    const QUESTION_INSTRUCTIONS = {
+      PG: 'Pilih satu jawaban yang tepat.',
+      MCMA: 'Klik pada setiap jawaban benar! Jawaban benar lebih dari satu.',
+      BS: 'Tentukan Benar atau Salah pada setiap opsi berikut.'
+    };
+
+    function normalizeQuestionFormat(question) {
+      const q = { ...question };
+      if (q.type === 'MCMA') {
+        q.options = ['A', 'B', 'C'].map(key => ({ key, text: '', img: '', ...(q.options || []).find(o => o.key === key) }));
+        q.correctKeys = (q.correctKeys || []).filter(key => ['A', 'B', 'C'].includes(key));
+      } else if (q.type === 'BS') {
+        q.statements = [0, 1, 2].map(i => ({ text: '', correct: true, ...(q.statements || [])[i] }));
+      }
+      return q;
+    }
+
+    function getStoredData(key, fallback = []) {
+      if (key in cloudCache) {
+        const data = JSON.parse(JSON.stringify(cloudCache[key]));
+        return key === STORAGE_KEYS.QUESTIONS ? data.map(normalizeQuestionFormat) : data;
+      }
+      try {
+        const item = localStorage.getItem(key);
+        const data = item ? JSON.parse(item) : fallback;
+        if (key === STORAGE_KEYS.ACTIVE_SESSION && data) data.questions = data.questions.map(normalizeQuestionFormat);
+        return data;
+      } catch (err) {
+        return fallback;
+      }
+    }
+
+    function setStoredData(key, data) {
+      if (CLOUD_KV.includes(key)) {
+        cloudCache[key] = JSON.parse(JSON.stringify(data));
+        cloudSaveKV(key, data);
+        return true;
+      }
+      if (key === STORAGE_KEYS.RESULTS) {
+        const known = new Set(cloudCache[key].map(r => r.id));
+        data.filter(r => !known.has(r.id)).forEach(r => cloudSaveResult(r));
+        cloudCache[key] = JSON.parse(JSON.stringify(data));
+        return true;
+      }
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+        return true;
+      } catch (err) {
+        showToast('Penyimpanan penuh atau dibatasi oleh browser!', 'error');
+        return false;
+      }
+    }
+
+    function ensureInitialData() {}
+
+    let selectedTeacherClass = null;
+    let teacherFormMode = 'join';
+    function scopedTeacherExams() {
+      return getStoredData(STORAGE_KEYS.EXAMS, []).filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code);
+    }
+    function scopedTeacherResults() {
+      const ids = new Set(scopedTeacherExams().map(ex => ex.id));
+      return getStoredData(STORAGE_KEYS.RESULTS, []).filter(result => selectedTeacherClass && (result.classroomCode ? result.classroomCode === selectedTeacherClass.code : ids.has(result.examId)));
+    }
+    function renderTeacherPortal() {
+      const selected = Boolean(selectedTeacherClass);
+      if (!selected && !document.getElementById('teacherClassForm').hidden) return;
+      document.getElementById('teacherEntry').hidden = selected;
+      document.getElementById('teacherClassForm').hidden = true;
+      document.getElementById('teacherDashboard').hidden = !selected;
+      document.getElementById('teacherClassTools').hidden = !selected;
+      document.getElementById('teacherIdentity').hidden = !selected;
+      if (!selected) { document.getElementById('teacherSubtitle').textContent = 'Akses atau buat kelas baru'; return; }
+      const results = scopedTeacherResults();
+      document.getElementById('teacherSubtitle').textContent = results.length + ' hasil TKA';
+      document.getElementById('teacherIdentity').textContent = selectedTeacherClass.teacher_name + (selectedTeacherClass.school_name ? ' • ' + selectedTeacherClass.school_name : '');
+      document.getElementById('teacherActiveCode').textContent = selectedTeacherClass.code;
+      document.getElementById('teacherEmptyCode').textContent = selectedTeacherClass.code;
+      document.getElementById('teacherNoResults').hidden = results.length > 0;
+      renderGuruExamList(); renderGuruResults();
+    }
+    function resetTeacherClass() {
+      selectedTeacherClass = null;
+      document.getElementById('teacherClassForm').hidden = true;
+      if (parent.tkaCloud) parent.tkaCloud.clearClassroom();
+      cloudCache[STORAGE_KEYS.RESULTS] = [];
+      document.getElementById('filterResultExam').value = 'ALL';
+      document.getElementById('searchResultStudent').value = '';
+      renderGuruExamList();
+      renderGuruResults();
+      renderTeacherPortal();
+    }
+    function teacherBack() {
+      if (selectedTeacherClass || !document.getElementById('teacherClassForm').hidden) resetTeacherClass();
+      else navigateTo('portal');
+    }
+    function showTeacherForm(mode) {
+      teacherFormMode = mode;
+      const create = mode === 'create';
+      document.getElementById('teacherEntry').hidden = true;
+      document.getElementById('teacherClassForm').hidden = false;
+      document.getElementById('teacherClassForm').reset();
+      document.getElementById('teacherCreateFields').hidden = !create;
+      document.getElementById('teacherName').required = create;
+      document.getElementById('teacherSchool').required = create;
+      document.getElementById('teacherClassError').hidden = true;
+      document.getElementById('teacherFormTitle').textContent = create ? 'Buat Kelas Baru' : 'Masuk ke Kelas';
+      document.getElementById('teacherFormDesc').textContent = create ? 'Buat kode unik untuk kelasmu. Siswa akan menggunakan kode ini untuk mengirim hasil ujian.' : 'Masukkan kode kelas yang sudah dibuat sebelumnya';
+      document.getElementById('teacherClassSubmit').textContent = create ? 'Buat Kelas' : 'Masuk';
+      document.getElementById('teacherFormSymbol').className = 'teacher-symbol ' + (create ? 'teacher-symbol-add' : 'teacher-symbol-key');
+      document.getElementById('teacherFormSymbol').innerHTML = create ? '<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg>' : '<svg viewBox="0 0 24 24"><circle cx="15" cy="8" r="5"/><path d="m11 12-8 8v-4l3-3h3l2-2"/></svg>';
+      document.getElementById(create ? 'teacherName' : 'teacherClassCode').focus();
+    }
+    async function submitTeacherClass(event) {
+      event.preventDefault();
+      const button = document.getElementById('teacherClassSubmit');
+      button.disabled = true;
+      document.getElementById('teacherClassError').hidden = true;
+      try {
+        const classroom = await (await bridgeReady()).classroom({ action: teacherFormMode, code: document.getElementById('teacherClassCode').value.trim().toUpperCase(), teacherName: document.getElementById('teacherName').value.trim(), schoolName: document.getElementById('teacherSchool').value.trim() });
+        selectedTeacherClass = classroom;
+        cloudCache[STORAGE_KEYS.RESULTS] = [];
+        await cloudRefresh();
+        switchGuruTab('results');
+        renderTeacherPortal();
+      } catch (error) {
+        document.getElementById('teacherClassError').textContent = error.message || 'Kelas belum dapat dibuka.';
+        document.getElementById('teacherClassError').hidden = false;
+      } finally { button.disabled = false; }
+    }
+    async function copyTeacherClassCode() {
+      if (!selectedTeacherClass) return;
+      try { await navigator.clipboard.writeText(selectedTeacherClass.code); showToast('Kode kelas disalin.', 'success'); }
+      catch { showToast('Kode kelas: ' + selectedTeacherClass.code); }
+    }
+    async function refreshTeacherPortal() {
+      const button = document.getElementById('teacherRefresh'); button.disabled = true;
+      try { await refreshCurrentView(); } finally { button.disabled = false; }
+    }
+    let guruPollTimer = null;
+    async function refreshCurrentView() {
+      await cloudRefresh();
+      if (currentRole === 'guru') renderTeacherPortal();
+      else if (currentRole === 'admin') { renderAdminQuestionList(); }
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <span>${escapeHTML(message)}</span>
+        <button style="background:none;border:none;cursor:pointer;font-weight:bold;color:inherit;" onclick="this.parentElement.remove()">&times;</button>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        if (toast.parentElement) toast.remove();
+      }, 4000);
+    }
+
+    function showCustomAlert(message, title = 'Pemberitahuan') {
+      document.getElementById('customAlertTitle').innerText = title;
+      document.getElementById('customAlertMessage').innerHTML = message;
+      document.getElementById('customAlertFooter').innerHTML = `
+        <button class="btn btn-primary" onclick="closeModal('customAlertModal')">Mengerti</button>
+      `;
+      openModal('customAlertModal');
+    }
+
+    function showCustomConfirm(message, title = 'Konfirmasi', onConfirm) {
+      document.getElementById('customAlertTitle').innerText = title;
+      document.getElementById('customAlertMessage').innerHTML = message;
+      document.getElementById('customAlertFooter').innerHTML = `
+        <button class="btn btn-secondary" onclick="closeModal('customAlertModal')">Batal</button>
+        <button class="btn btn-danger" id="customConfirmOkBtn">Lanjutkan</button>
+      `;
+      document.getElementById('customConfirmOkBtn').onclick = () => {
+        closeModal('customAlertModal');
+        if (typeof onConfirm === 'function') onConfirm();
+      };
+      openModal('customAlertModal');
+    }
+
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.remove('active');
+    }
+
+    function escapeHTML(str) {
+      if (typeof str !== 'string') return str || '';
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+'"': '&quot;'
+      }[tag] || tag));
+    }
+
+    // Escape HTML lalu ubah enter/baris baru menjadi pindah baris agar
+    // alur pembahasan tampil runut seperti saat guru menuliskannya.
+    function escapeHTMLMultiline(str) {
+      const safe = escapeHTML(str);
+      if (typeof safe !== 'string') return safe;
+      return safe.replace(/\r?\n/g, '<br>');
+    }
+
+    // Render only delimited math; all ordinary text remains escaped.
+    function renderQuestionText(value) {
+      const text = String(value ?? '');
+      const pattern = /\$\$([\s\S]+?)\$\$|\$([^$\n]+?)\$|\\\(([\s\S]+?)\\\)|\\\[([\s\S]+?)\\\]/g;
+      let html = '';
+      let last = 0;
+      for (const match of text.matchAll(pattern)) {
+        html += escapeHTMLMultiline(text.slice(last, match.index));
+        const formula = match[1] ?? match[2] ?? match[3] ?? match[4];
+        try {
+          html += window.katex.renderToString(formula, {
+            displayMode: match[1] !== undefined || match[4] !== undefined,
+            throwOnError: true, trust: false, strict: 'ignore', maxExpand: 200,
+          });
+        } catch {
+          html += escapeHTMLMultiline(match[0]);
+        }
+        last = match.index + match[0].length;
+      }
+      return html + escapeHTMLMultiline(text.slice(last));
+    }
+
+    function refreshMathPreviews() {
+      document.querySelectorAll('#questionEditorForm textarea, #questionEditorForm input[id^="opt_text_"], #questionEditorForm input[id^="bs_text_"]').forEach(input => {
+        let preview = document.getElementById('mathPreview_' + input.id);
+        if (!preview) {
+          preview = document.createElement('div');
+          preview.id = 'mathPreview_' + input.id;
+          preview.className = 'math-preview';
+          preview.setAttribute('aria-live', 'polite');
+          input.insertAdjacentElement('afterend', preview);
+        }
+        const content = renderQuestionText(input.value);
+        preview.hidden = !content.includes('class="katex');
+        preview.innerHTML = preview.hidden ? '' : content;
+      });
+    }
+    document.getElementById('questionEditorForm').addEventListener('input', refreshMathPreviews);
+
+    function navigateTo(viewId) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById(`view-${viewId}`);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      const roleBadge = document.getElementById('currentRoleBadge');
+      if (viewId === 'portal') {
+        currentRole = 'portal';
+        roleBadge.innerText = 'Portal belajar';
+      } else if (viewId === 'admin') {
+        currentRole = 'admin';
+        roleBadge.innerText = 'Mode: Admin/Developer';
+        renderAdminQuestionList();
+        refreshCurrentView();
+      } else if (viewId === 'guru') {
+        currentRole = 'guru';
+        roleBadge.innerText = 'Mode: Guru';
+        resetTeacherClass();
+        refreshCurrentView();
+      } else if (viewId.startsWith('siswa')) {
+        currentRole = 'siswa';
+        roleBadge.innerText = 'Mode: Siswa';
+      }
+    }
+
+    let passcodeTargetRole = '';
+    function openPasscodeModal(role) {
+      passcodeTargetRole = role;
+      document.getElementById('inputPasscode').value = '';
+      if (role === 'admin') {
+        document.getElementById('passcodeModalTitle').innerText = 'Masuk Administrator';
+        document.getElementById('passcodeModalDesc').innerText = 'Masukkan kode akses administrator untuk mengelola bank soal.';
+      } else {
+        document.getElementById('passcodeModalTitle').innerText = 'Masuk Guru';
+        document.getElementById('passcodeModalDesc').innerText = 'Masukkan kode akses guru untuk membuat dan memonitor ujian.';
+      }
+      openModal('passcodeModal');
+      setTimeout(() => document.getElementById('inputPasscode').focus(), 150);
+    }
+
+    let passcodeBusy = false;
+    async function submitPasscode() {
+      if (passcodeBusy) return;
+      const btn = document.getElementById('passcodeSubmitBtn');
+      passcodeBusy = true; if (btn) { btn.disabled = true; btn.innerText = 'Memproses…'; }
+      try {
+        const bridge = await bridgeReady();
+        await bridge.login(document.getElementById('inputPasscode').value, passcodeTargetRole); document.getElementById('inputPasscode').value='';
+        closeModal('passcodeModal');
+        navigateTo(passcodeTargetRole);
+        document.getElementById('signOutButton').hidden = false;
+        showToast('Berhasil masuk', 'success');
+        if (await cloudRefresh()) refreshCurrentView();
+      } catch (error) { showToast(error.message || 'Tidak dapat masuk.', 'error'); }
+      finally { passcodeBusy = false; if (btn) { btn.disabled = false; btn.innerHTML = 'Masuk &rarr;'; } }
+    }
+    async function signOut() {
+      resetTeacherClass(); await (await bridgeReady()).logout(); cloudCache[STORAGE_KEYS.RESULTS] = [];
+      document.getElementById('signOutButton').hidden = true; navigateTo('portal');
+    }
+    function setTheme(mode) {
+      document.documentElement.classList.toggle('dark', mode === 'dark');
+      localStorage.setItem('tka_theme', mode);
+      document.getElementById('themeLight').setAttribute('aria-pressed', String(mode === 'light'));
+      document.getElementById('themeDark').setAttribute('aria-pressed', String(mode === 'dark'));
+      parent.document.documentElement.classList.toggle('dark', mode === 'dark');
+    }
+    function renderAdminQuestionList() {
+      const questions = getStoredData(STORAGE_KEYS.QUESTIONS, []);
+      const filterPkg = document.getElementById('filterAdminPackage').value;
+      const filterType = document.getElementById('filterAdminType').value;
+      const searchText = document.getElementById('searchAdminText').value.toLowerCase().trim();
+
+      // Update counters
+      const countBI = questions.filter(q => q.subject === 'Bahasa Indonesia').length;
+      const countMat = questions.filter(q => q.subject === 'Matematika').length;
+      document.getElementById('statCountBI').innerText = `${countBI} Soal`;
+      document.getElementById('statCountMat').innerText = `${countMat} Soal`;
+      document.getElementById('statCountTotal').innerText = `${questions.length} Soal`;
+
+      const tbody = document.getElementById('adminQuestionTbody');
+      const emptyMsg = document.getElementById('adminEmptyMsg');
+      tbody.innerHTML = '';
+
+      const filtered = questions.filter(q => {
+        if (filterPkg !== 'ALL' && q.packageId !== filterPkg) return false;
+        if (filterType !== 'ALL' && q.type !== filterType) return false;
+        if (searchText) {
+          const matchQ = (q.questionText || '').toLowerCase().includes(searchText);
+          const matchStim = (q.stimulusText || '').toLowerCase().includes(searchText);
+          if (!matchQ && !matchStim) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+      }
+      emptyMsg.style.display = 'none';
+
+      filtered.forEach((q, idx) => {
+        const pkgObj = PACKAGES_CONFIG.find(p => p.id === q.packageId) || { name: q.packageId };
+        const tr = document.createElement('tr');
+        
+        let typeBadge = '';
+        if (q.type === 'PG') typeBadge = '<span class="badge badge-primary">PG (1 Kunci)</span>';
+        else if (q.type === 'MCMA') typeBadge = '<span class="badge badge-warning">MCMA (Multi Kunci)</span>';
+        else if (q.type === 'BS') typeBadge = '<span class="badge badge-secondary">Benar / Salah</span>';
+
+        const hasMedia = (q.stimulusImg || q.questionImg || (q.options && q.options.some(o => o.img))) ?
+          '<span class="badge badge-success">Ada Gambar</span>' : '<span style="color:var(--text-light); font-size:12px;">Tanpa Media</span>';
+
+        const snippet = escapeHTML(q.questionText.length > 75 ? q.questionText.substring(0, 75) + '...' : q.questionText);
+
+        tr.innerHTML = `
+          <td><strong>${idx + 1}</strong></td>
+          <td>
+            <div style="font-weight: 700; color: var(--text-main);">${escapeHTML(pkgObj.name)}</div>
+            <div style="margin-top: 4px;">${typeBadge}</div>
+          </td>
+          <td>
+            <div style="font-size: 14px;">${snippet}</div>
+            ${q.stimulusText ? '<div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;"><em>(Memiliki Stimulus Teks)</em></div>' : ''}
+          </td>
+          <td>${hasMedia}</td>
+          <td><strong>${q.weight || 1}</strong></td>
+          <td style="text-align: right;">
+            <div style="display: flex; gap: 4px; justify-content: flex-end;">
+              <button class="btn btn-outline btn-sm" onclick="previewQuestion('${q.id}')" title="Pratinjau">&#128065;</button>
+              <button class="btn btn-secondary btn-sm" onclick="editQuestion('${q.id}')" title="Edit">&#9998;</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteQuestion('${q.id}')" title="Hapus">&times;</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openQuestionModal(editData = null) {
+      document.getElementById('questionEditorForm').reset();
+      document.getElementById('previewStimulusImg').style.display = 'none';
+      document.getElementById('previewQuestionImg').style.display = 'none';
+
+      if (editData) {
+        document.getElementById('questionEditorTitle').innerText = 'Edit Butir Soal';
+        document.getElementById('editQuestionId').value = editData.id;
+        document.getElementById('qEditPackage').value = editData.packageId;
+        document.getElementById('qEditType').value = editData.type;
+        document.getElementById('qEditWeight').value = editData.weight || 1;
+        document.getElementById('qEditStimulusText').value = editData.stimulusText || '';
+        document.getElementById('qEditStimulusImg').value = editData.stimulusImg || '';
+        document.getElementById('qEditQuestionText').value = editData.questionText || '';
+        document.getElementById('qEditQuestionImg').value = editData.questionImg || '';
+        document.getElementById('qEditDiscussion').value = editData.discussion || '';
+
+        if (editData.stimulusImg) previewEditorImage('qEditStimulusImg', 'previewStimulusImg');
+        if (editData.questionImg) previewEditorImage('qEditQuestionImg', 'previewQuestionImg');
+
+        handleQuestionTypeChange(editData);
+      } else {
+        document.getElementById('questionEditorTitle').innerText = 'Tambah Soal Baru';
+        document.getElementById('editQuestionId').value = '';
+        document.getElementById('qEditWeight').value = 1;
+        handleQuestionTypeChange();
+      }
+
+      refreshMathPreviews();
+      openModal('questionEditorModal');
+    }
+
+    function handleQuestionTypeChange(existingData = null) {
+      const type = document.getElementById('qEditType').value;
+      const container = document.getElementById('editorOptionsContainer');
+      container.innerHTML = '';
+
+      if (type === 'PG' || type === 'MCMA') {
+        const isMulti = type === 'MCMA';
+        const title = isMulti ? 'Pilihan Ganda Kompleks (Centang Semua Pilihan Benar)' : 'Pilihan Ganda (Pilih 1 Kunci Jawaban Benar)';
+        
+        let html = `
+          <div style="font-weight:700; font-size:14px; margin-bottom:8px; color:var(--primary);">${title}</div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+        `;
+
+        const defaultKeys = isMulti ? ['A', 'B', 'C'] : ['A', 'B', 'C', 'D'];
+        defaultKeys.forEach(k => {
+          let textVal = '';
+          let imgVal = '';
+          let isChecked = false;
+
+          if (existingData && existingData.options) {
+            const opt = existingData.options.find(o => o.key === k);
+            if (opt) {
+              textVal = opt.text || '';
+              imgVal = opt.img || '';
+            }
+            if (isMulti) {
+              isChecked = (existingData.correctKeys || []).includes(k);
+            } else {
+              isChecked = (existingData.correctKey === k);
+            }
+          } else if (!isMulti && k === 'A') {
+            isChecked = true;
+          }
+
+          html += `
+            <div style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:12px; background:var(--bg-card);">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <input type="${isMulti ? 'checkbox' : 'radio'}" name="correctKeyChoice" value="${k}" ${isChecked ? 'checked' : ''} style="width:20px; height:20px; accent-color:var(--primary);">
+                <label style="font-weight:800; color:var(--primary);">Opsi ${k} (Centang jika Kunci Benar)</label>
+              </div>
+              <div class="form-group" style="margin-bottom:8px;">
+                <input type="text" class="form-control" id="opt_text_${k}" value="${escapeHTML(textVal)}" placeholder="Teks jawaban opsi ${k} (boleh kosong jika memakai gambar)">
+              </div>
+              <div>
+                <input type="url" class="form-control" id="opt_img_${k}" value="${escapeHTML(imgVal)}" placeholder="URL Gambar Opsi ${k} (Opsional)" oninput="previewEditorImage('opt_img_${k}', 'preview_opt_${k}')">
+                <div class="image-preview-box" id="preview_opt_${k}" style="display:${imgVal ? 'block' : 'none'}; margin-top:6px;">
+                  <img src="${escapeHTML(imgVal)}" alt="Opsi ${k}" onerror="handleImageError(this)">
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+        container.innerHTML = html;
+        refreshMathPreviews();
+      } else if (type === 'BS') {
+        // 3 Statements Benar / Salah
+        let html = `
+          <div style="font-weight:700; font-size:14px; margin-bottom:8px; color:var(--primary);">Mengkategorikan Benar / Salah (3 Butir Pernyataan)</div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+        `;
+        [0, 1, 2].forEach(i => {
+          let sText = '';
+          let sCorrect = true;
+          if (existingData && existingData.statements && existingData.statements[i]) {
+            sText = existingData.statements[i].text || '';
+            sCorrect = existingData.statements[i].correct === true;
+          }
+
+          html += `
+            <div style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:12px; background:var(--bg-card);">
+              <div class="form-group" style="margin-bottom:8px;">
+                <label class="form-label">Pernyataan ${i + 1}:</label>
+                <input type="text" class="form-control" id="bs_text_${i}" value="${escapeHTML(sText)}" placeholder="Tuliskan pernyataan ${i + 1}" required>
+              </div>
+              <div style="display:flex; gap:20px; align-items:center;">
+                <span style="font-size:14px; font-weight:600;">Kunci Jawaban:</span>
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="radio" name="bs_choice_${i}" value="BENAR" ${sCorrect ? 'checked' : ''} style="width:18px; height:18px; accent-color:var(--success);">
+                  <strong style="color:var(--success);">BENAR</strong>
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="radio" name="bs_choice_${i}" value="SALAH" ${!sCorrect ? 'checked' : ''} style="width:18px; height:18px; accent-color:var(--danger);">
+                  <strong style="color:var(--danger);">SALAH</strong>
+                </label>
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+        container.innerHTML = html;
+        refreshMathPreviews();
+      }
+    }
+
+    function previewEditorImage(inputId, previewBoxId) {
+      const url = document.getElementById(inputId).value.trim();
+      const previewBox = document.getElementById(previewBoxId);
+      if (!url) {
+        previewBox.style.display = 'none';
+        return;
+      }
+      previewBox.style.display = 'block';
+      const img = previewBox.querySelector('img');
+      img.style.display = 'block';
+      img.src = url;
+      const failMsg = previewBox.querySelector('.img-fail-msg');
+      if (failMsg) failMsg.style.display = 'none';
+    }
+
+    function handleImageError(imgEl) {
+      imgEl.style.display = 'none';
+      const parent = imgEl.parentElement;
+      const failMsg = parent.querySelector('.img-fail-msg');
+      if (failMsg) failMsg.style.display = 'block';
+    }
+
+    function clearImageUrl(inputId, previewBoxId) {
+      document.getElementById(inputId).value = '';
+      document.getElementById(previewBoxId).style.display = 'none';
+    }
+
+    function saveQuestionFromEditor(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editQuestionId').value;
+      const pkgId = document.getElementById('qEditPackage').value;
+      const type = document.getElementById('qEditType').value;
+      const weight = parseInt(document.getElementById('qEditWeight').value, 10) || 1;
+      const stimulusText = document.getElementById('qEditStimulusText').value.trim();
+      const stimulusImg = document.getElementById('qEditStimulusImg').value.trim();
+      const questionText = document.getElementById('qEditQuestionText').value.trim();
+      const questionImg = document.getElementById('qEditQuestionImg').value.trim();
+      const discussion = document.getElementById('qEditDiscussion').value.trim();
+
+      const pkgConfig = PACKAGES_CONFIG.find(p => p.id === pkgId);
+      const subject = pkgConfig ? pkgConfig.subject : 'Bahasa Indonesia';
+
+      // Pertanyaan, stimulus, dan opsi boleh kosong — soal tetap bisa disimpan.
+
+      let questionObj = {
+        id: editId || 'q_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        packageId: pkgId,
+        subject: subject,
+        type: type,
+        weight: weight,
+        stimulusText: stimulusText,
+        stimulusImg: stimulusImg,
+        questionText: questionText,
+        questionImg: questionImg,
+        discussion: discussion,
+        createdAt: Date.now()
+      };
+
+      if (type === 'PG') {
+        const correctChoice = document.querySelector('input[name="correctKeyChoice"]:checked');
+        if (!correctChoice) {
+          showToast('Wajib menentukan satu kunci jawaban benar untuk PG!', 'warning');
+          return;
+        }
+        questionObj.correctKey = correctChoice.value;
+        questionObj.options = ['A', 'B', 'C', 'D'].map(k => ({
+          key: k,
+          text: document.getElementById(`opt_text_${k}`).value.trim(),
+          img: document.getElementById(`opt_img_${k}`).value.trim()
+        }));
+      } else if (type === 'MCMA') {
+        const checkedBoxes = Array.from(document.querySelectorAll('input[name="correctKeyChoice"]:checked')).map(el => el.value);
+        if (checkedBoxes.length === 0) {
+          showToast('Pilih minimal satu opsi kunci jawaban benar untuk MCMA!', 'warning');
+          return;
+        }
+        questionObj.correctKeys = checkedBoxes;
+        questionObj.options = ['A', 'B', 'C'].map(k => ({
+          key: k,
+          text: document.getElementById(`opt_text_${k}`).value.trim(),
+          img: document.getElementById(`opt_img_${k}`).value.trim()
+        }));
+      } else if (type === 'BS') {
+        const statements = [0, 1, 2].map(i => {
+          const sText = document.getElementById(`bs_text_${i}`).value.trim();
+          const sChoice = document.querySelector(`input[name="bs_choice_${i}"]:checked`).value;
+          return {
+            text: sText,
+            correct: sChoice === 'BENAR'
+          };
+        });
+        questionObj.statements = statements;
+      }
+
+      // Save to storage
+      const questions = getStoredData(STORAGE_KEYS.QUESTIONS, []);
+      if (editId) {
+        const idx = questions.findIndex(q => q.id === editId);
+        if (idx !== -1) questions[idx] = questionObj;
+        else questions.push(questionObj);
+      } else {
+        questions.push(questionObj);
+      }
+
+      setStoredData(STORAGE_KEYS.QUESTIONS, questions);
+      closeModal('questionEditorModal');
+      showToast('Butir soal berhasil disimpan!', 'success');
+      renderAdminQuestionList();
+    }
+
+    function editQuestion(id) {
+      const questions = getStoredData(STORAGE_KEYS.QUESTIONS, []);
+      const q = questions.find(item => item.id === id);
+      if (q) openQuestionModal(q);
+    }
+
+    function deleteQuestion(id) {
+      showCustomConfirm('Apakah Anda yakin ingin menghapus butir soal ini dari bank soal?', 'Hapus Soal', () => {
+        let questions = getStoredData(STORAGE_KEYS.QUESTIONS, []);
+        questions = questions.filter(q => q.id !== id);
+        setStoredData(STORAGE_KEYS.QUESTIONS, questions);
+        showToast('Soal berhasil dihapus.', 'info');
+        renderAdminQuestionList();
+      });
+    }
+
+    function previewQuestion(id) {
+      const questions = getStoredData(STORAGE_KEYS.QUESTIONS, []);
+      const q = questions.find(item => item.id === id);
+      if (!q) return;
+
+      const body = document.getElementById('previewQuestionBody');
+      let optHtml = '';
+      if (q.type === 'PG') {
+        optHtml = q.options.map(o => `
+          <div style="padding:8px 12px; border-radius:6px; margin-bottom:6px; background:${o.key === q.correctKey ? 'var(--success-light)' : 'var(--bg-body)'}; border:1px solid ${o.key === q.correctKey ? 'var(--success)' : 'var(--border-color)'};">
+            <strong>${o.key}.</strong> ${renderQuestionText(o.text)} ${o.key === q.correctKey ? '<span style="color:var(--success); font-weight:bold;">(Kunci Jawaban)</span>' : ''}
+            ${o.img ? `<div style="margin-top:6px;"><img src="${escapeHTML(o.img)}" style="max-height:120px; object-fit:contain;"></div>` : ''}
+          </div>
+        `).join('');
+      } else if (q.type === 'MCMA') {
+        optHtml = q.options.map(o => {
+          const isKunci = (q.correctKeys || []).includes(o.key);
+          return `
+            <div style="padding:8px 12px; border-radius:6px; margin-bottom:6px; background:${isKunci ? 'var(--success-light)' : 'var(--bg-body)'}; border:1px solid ${isKunci ? 'var(--success)' : 'var(--border-color)'};">
+              <strong>${o.key}.</strong> ${renderQuestionText(o.text)} ${isKunci ? '<span style="color:var(--success); font-weight:bold;">(Kunci Benar)</span>' : ''}
+              ${o.img ? `<div style="margin-top:6px;"><img src="${escapeHTML(o.img)}" style="max-height:120px; object-fit:contain;"></div>` : ''}
+            </div>
+          `;
+        }).join('');
+      } else if (q.type === 'BS') {
+        optHtml = (q.statements || []).map((s, idx) => `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-bottom:1px solid var(--border-color);">
+            <span>${idx + 1}. ${renderQuestionText(s.text)}</span>
+            <span class="badge ${s.correct ? 'badge-success' : 'badge-danger'}">${s.correct ? 'BENAR' : 'SALAH'}</span>
+          </div>
+        `).join('');
+      }
+
+      body.innerHTML = `
+        <div style="margin-bottom:12px;">
+          <span class="badge badge-primary">${escapeHTML(q.type)}</span>
+          <span class="badge badge-secondary">Bobot: ${q.weight || 1}</span>
+        </div>
+        ${q.stimulusText ? `<div class="stimulus-container"><strong>Wacana:</strong><br>${renderQuestionText(q.stimulusText)}</div>` : ''}
+        ${q.stimulusImg ? `<div class="image-preview-box"><img src="${escapeHTML(q.stimulusImg)}"></div>` : ''}
+        <div style="font-weight:700; margin-bottom:14px; font-size:1.05rem;">${renderQuestionText(q.questionText)}</div>
+        ${q.questionImg ? `<div class="image-preview-box"><img src="${escapeHTML(q.questionImg)}"></div>` : ''}
+        <p class="question-instruction">${QUESTION_INSTRUCTIONS[q.type] || ''}</p>
+        <div style="margin-top:14px;">${optHtml}</div>
+        ${q.discussion ? `<div style="margin-top:16px; padding:12px; background:var(--warning-light); border-radius:8px; font-size:13px; color:var(--warning); white-space:pre-line;"><strong>Pembahasan:</strong><br>${renderQuestionText(q.discussion)}</div>` : ''}
+      `;
+
+      openModal('previewQuestionModal');
+    }
+
+    function exportQuestionBankJSON() {
+      const questions = getStoredData(STORAGE_KEYS.QUESTIONS, []);
+      if (questions.length === 0) {
+        showToast('Bank soal masih kosong! Tidak ada data untuk diekspor.', 'warning');
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questions, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `TKA_Bank_Soal_SDN4Banawa_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('Bank soal berhasil diekspor ke berkas JSON.', 'success');
+    }
+
+    function openImportModal() {
+      document.getElementById('importJsonFileInput').value = '';
+      openModal('importJsonModal');
+    }
+
+    function processImportJSON() {
+      const fileInput = document.getElementById('importJsonFileInput');
+      const mode = document.getElementById('importJsonMode').value;
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showToast('Pilih berkas JSON terlebih dahulu!', 'warning');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (!Array.isArray(parsed)) {
+            showToast('Format JSON tidak valid! Berkas harus berisi array soal.', 'error');
+            return;
+          }
+          // Validate required properties
+          const isValid = parsed.every(item => item.id && item.type && (item.questionText || item.questionImg) && item.packageId);
+          if (!isValid) {
+            showToast('Struktur JSON tidak sesuai standar bank soal TKA!', 'error');
+            return;
+          }
+
+          let currentQuestions = getStoredData(STORAGE_KEYS.QUESTIONS, []);
+          if (mode === 'replace') {
+            currentQuestions = parsed;
+          } else {
+            // Merge by unique id
+            const existingIds = new Set(currentQuestions.map(q => q.id));
+            parsed.forEach(q => {
+              if (existingIds.has(q.id)) {
+                q.id = 'q_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+              }
+              currentQuestions.push(q);
+            });
+          }
+
+          setStoredData(STORAGE_KEYS.QUESTIONS, currentQuestions);
+          closeModal('importJsonModal');
+          showToast(`Berhasil mengimpor ${parsed.length} butir soal!`, 'success');
+          renderAdminQuestionList();
+        } catch (err) {
+          showToast('Gagal memproses JSON: Berkas rusak atau format salah.', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function switchGuruTab(tab) {
+      if (tab === 'exams') {
+        document.getElementById('tabGuruExamsBtn').classList.add('active');
+        document.getElementById('tabGuruResultsBtn').classList.remove('active');
+        document.getElementById('tabGuruExamsContent').style.display = 'block';
+        document.getElementById('tabGuruResultsContent').style.display = 'none';
+        renderGuruExamList();
+      } else {
+        document.getElementById('tabGuruExamsBtn').classList.remove('active');
+        document.getElementById('tabGuruResultsBtn').classList.add('active');
+        document.getElementById('tabGuruExamsContent').style.display = 'none';
+        document.getElementById('tabGuruResultsContent').style.display = 'block';
+        renderGuruResults();
+      }
+    }
+
+    function openCreateExamModal(existingExam = null) {
+      if (!selectedTeacherClass) return;
+      if (existingExam && !scopedTeacherExams().some(ex => ex.id === existingExam.id)) return;
+      document.getElementById('examManageForm').reset();
+      handleExamSubjectChange();
+
+      const now = new Date();
+      const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      const toIsoStringLocal = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+      if (existingExam) {
+        document.getElementById('examManageTitle').innerText = 'Edit Ujian / Kelas';
+        document.getElementById('editExamId').value = existingExam.id;
+        document.getElementById('examFormTitle').value = existingExam.title;
+        document.getElementById('examFormSubject').value = existingExam.subject;
+        handleExamSubjectChange(existingExam.packageId);
+        document.getElementById('examFormQuestionCount').value = existingExam.questionCount;
+        document.getElementById('examFormDuration').value = existingExam.durationMinutes;
+        document.getElementById('examFormKkm').value = existingExam.kkm;
+        document.getElementById('examFormStartDate').value = existingExam.startDate;
+        document.getElementById('examFormEndDate').value = existingExam.endDate;
+        document.getElementById('examFormShuffle').checked = existingExam.shuffleQuestions !== false;
+        document.getElementById('examFormShowScore').checked = existingExam.showScore !== false;
+        document.getElementById('examFormShowDiscussion').checked = existingExam.showDiscussion !== false;
+        document.getElementById('examFormStatusOpen').checked = existingExam.status === 'OPEN';
+      } else {
+        document.getElementById('examManageTitle').innerText = 'Buat Ujian / Kelas Baru';
+        document.getElementById('editExamId').value = '';
+        document.getElementById('examFormDuration').value = 30;
+        document.getElementById('examFormKkm').value = 75;
+        document.getElementById('examFormStartDate').value = toIsoStringLocal(now);
+        document.getElementById('examFormEndDate').value = toIsoStringLocal(nextWeek);
+        document.getElementById('examFormShuffle').checked = true;
+        document.getElementById('examFormShowScore').checked = true;
+        document.getElementById('examFormShowDiscussion').checked = true;
+        document.getElementById('examFormStatusOpen').checked = true;
+      }
+
+      updateAvailableQuestionCountLabel();
+      openModal('examManageModal');
+    }
+
+    function handleExamSubjectChange(selectPackageId = null) {
+      const subject = document.getElementById('examFormSubject').value;
+      const pkgSelect = document.getElementById('examFormPackage');
+      pkgSelect.innerHTML = '';
+
+      const matched = PACKAGES_CONFIG.filter(p => p.subject === subject);
+      matched.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.innerText = p.name;
+        if (selectPackageId && p.id === selectPackageId) opt.selected = true;
+        pkgSelect.appendChild(opt);
+      });
+      updateAvailableQuestionCountLabel();
+    }
+
+    function updateAvailableQuestionCountLabel() {
+      const pkgId = document.getElementById('examFormPackage').value;
+      const questions = getStoredData(STORAGE_KEYS.QUESTIONS, []);
+      const count = questions.filter(q => q.packageId === pkgId).length;
+
+      document.getElementById('examAvailableCount').innerText = `${count} Soal`;
+      const warningEl = document.getElementById('examEmptyWarning');
+      const countInput = document.getElementById('examFormQuestionCount');
+
+      if (count === 0) {
+        warningEl.style.display = 'inline';
+        countInput.max = 0;
+      } else {
+        warningEl.style.display = 'none';
+        countInput.max = count;
+        if (parseInt(countInput.value, 10) > count) {
+          countInput.value = count;
+        }
+      }
+    }
+
+    async function saveExamSettings(e) {
+      e.preventDefault();
+      if (!selectedTeacherClass) return;
+      const editId = document.getElementById('editExamId').value;
+      if (editId && !scopedTeacherExams().some(ex => ex.id === editId)) return;
+      const title = document.getElementById('examFormTitle').value.trim();
+      const code = selectedTeacherClass.code;
+      const subject = document.getElementById('examFormSubject').value;
+      const packageId = document.getElementById('examFormPackage').value;
+      const reqCount = parseInt(document.getElementById('examFormQuestionCount').value, 10) || 1;
+      const duration = parseInt(document.getElementById('examFormDuration').value, 10) || 30;
+      const kkm = parseInt(document.getElementById('examFormKkm').value, 10) || 75;
+      const startDate = document.getElementById('examFormStartDate').value;
+      const endDate = document.getElementById('examFormEndDate').value;
+      const shuffle = document.getElementById('examFormShuffle').checked;
+      const showScore = document.getElementById('examFormShowScore').checked;
+      const showDiscussion = document.getElementById('examFormShowDiscussion').checked;
+      const isOpen = document.getElementById('examFormStatusOpen').checked;
+
+      // Validation: verify available questions in package
+      const questions = getStoredData(STORAGE_KEYS.QUESTIONS, []);
+      const availableCount = questions.filter(q => q.packageId === packageId).length;
+
+      if (availableCount === 0) {
+        showCustomAlert('Paket soal terpilih belum memiliki soal sama sekali di Bank Soal. Harap isi bank soal terlebih dahulu melalui menu Admin.', 'Paket Masih Kosong');
+        return;
+      }
+
+      if (reqCount > availableCount) {
+        showToast(`Jumlah butir soal tidak boleh melebihi ketersediaan (${availableCount} soal)!`, 'warning');
+        return;
+      }
+
+      const exams = getStoredData(STORAGE_KEYS.EXAMS, []);
+
+      const examObj = {
+        id: editId || 'ex_' + crypto.randomUUID(),
+        classroomCode: selectedTeacherClass.code,
+        code: code,
+        title: title,
+        subject: subject,
+        packageId: packageId,
+        questionCount: reqCount,
+        durationMinutes: duration,
+        kkm: kkm,
+        startDate: startDate,
+        endDate: endDate,
+        shuffleQuestions: shuffle,
+        showScore: showScore,
+        showDiscussion: showDiscussion,
+        status: isOpen ? 'OPEN' : 'CLOSED',
+        createdAt: Date.now()
+      };
+
+      if (editId) {
+        const idx = exams.findIndex(ex => ex.id === editId);
+        if (idx !== -1) exams[idx] = examObj;
+        else exams.push(examObj);
+      } else {
+        exams.push(examObj);
+      }
+
+      if (!await cloudSaveKV(STORAGE_KEYS.EXAMS, exams)) return;
+      cloudCache[STORAGE_KEYS.EXAMS] = exams;
+      closeModal('examManageModal');
+      showToast('Pengaturan ujian berhasil disimpan!', 'success');
+      renderGuruExamList();
+    }
+
+    function renderGuruExamList() {
+      const exams = scopedTeacherExams();
+      const tbody = document.getElementById('guruExamListTbody');
+      const emptyMsg = document.getElementById('guruExamsEmptyMsg');
+      tbody.innerHTML = '';
+
+      if (exams.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+      }
+      emptyMsg.style.display = 'none';
+
+      exams.forEach(ex => {
+        const pkgObj = PACKAGES_CONFIG.find(p => p.id === ex.packageId) || { name: ex.packageId };
+        const tr = document.createElement('tr');
+        const isOpen = ex.status === 'OPEN';
+        tr.innerHTML = `
+          <td><span class="badge badge-primary" style="font-size:14px; letter-spacing: 0;">${escapeHTML(ex.classroomCode || ex.code)}</span></td>
+          <td><strong>${escapeHTML(ex.title)}</strong></td>
+          <td>${escapeHTML(ex.subject)} &bull; ${escapeHTML(pkgObj.name)}</td>
+          <td>${ex.questionCount} Soal / ${ex.durationMinutes} Menit</td>
+          <td>${ex.kkm}</td>
+          <td>
+            <button class="btn btn-sm ${isOpen ? 'btn-success' : 'btn-secondary'}" onclick="toggleExamStatus('${ex.id}')">
+              ${isOpen ? 'BUKA (Aktif)' : 'TUTUP'}
+            </button>
+          </td>
+          <td style="text-align: right;">
+            <div style="display:flex; gap:4px; justify-content:flex-end;">
+              <button class="btn btn-secondary btn-sm" onclick="editGuruExam('${ex.id}')" title="Edit">&#9998;</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteGuruExam('${ex.id}')" title="Hapus">&times;</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function toggleExamStatus(examId) {
+      if (!scopedTeacherExams().some(ex => ex.id === examId)) return;
+      const exams = getStoredData(STORAGE_KEYS.EXAMS, []);
+      const ex = exams.find(e => e.id === examId);
+      if (ex) {
+        ex.status = (ex.status === 'OPEN') ? 'CLOSED' : 'OPEN';
+        if (!await cloudSaveKV(STORAGE_KEYS.EXAMS, exams)) return;
+        cloudCache[STORAGE_KEYS.EXAMS] = exams;
+        renderGuruExamList();
+        showToast(`Status ujian berhasil diubah menjadi ${ex.status === 'OPEN' ? 'Terbuka' : 'Ditutup'}.`, 'info');
+      }
+    }
+
+    function editGuruExam(examId) {
+      if (!scopedTeacherExams().some(ex => ex.id === examId)) return;
+      const exams = getStoredData(STORAGE_KEYS.EXAMS, []);
+      const ex = exams.find(e => e.id === examId);
+      if (ex) openCreateExamModal(ex);
+    }
+
+    function deleteGuruExam(examId) {
+      if (!scopedTeacherExams().some(ex => ex.id === examId)) return;
+      showCustomConfirm('Apakah Anda yakin ingin menghapus ujian ini? Data hasil yang terkait tetap tersimpan dalam riwayat.', 'Hapus Ujian', async () => {
+        let exams = getStoredData(STORAGE_KEYS.EXAMS, []);
+        exams = exams.filter(e => e.id !== examId);
+        if (!await cloudSaveKV(STORAGE_KEYS.EXAMS, exams)) return;
+        cloudCache[STORAGE_KEYS.EXAMS] = exams;
+        showToast('Ujian berhasil dihapus.', 'info');
+        renderGuruExamList();
+      });
+    }
+
+    function renderGuruResults() {
+      const results = scopedTeacherResults();
+      const exams = scopedTeacherExams();
+      const examFilter = document.getElementById('filterResultExam').value;
+      const searchStudent = document.getElementById('searchResultStudent').value.toLowerCase().trim();
+
+      // Populate exam filter dropdown
+      const filterSelect = document.getElementById('filterResultExam');
+      const currentSelected = filterSelect.value;
+      filterSelect.innerHTML = '<option value="ALL">Semua Ujian</option>';
+      exams.forEach(ex => {
+        const opt = document.createElement('option');
+        opt.value = ex.id;
+        opt.innerText = `${ex.classroomCode || ex.code} - ${ex.title}`;
+        if (opt.value === currentSelected) opt.selected = true;
+        filterSelect.appendChild(opt);
+      });
+
+      // Filter results
+      const filtered = results.filter(r => {
+        if (examFilter !== 'ALL' && r.examId !== examFilter) return false;
+        if (searchStudent && !r.studentName.toLowerCase().includes(searchStudent)) return false;
+        return true;
+      });
+
+      // Update statistics
+      const totalPeserta = filtered.length;
+      let sumNilai = 0;
+      let highest = 0;
+      let lowest = totalPeserta > 0 ? 100 : 0;
+      let passCount = 0;
+
+      filtered.forEach(r => {
+        sumNilai += r.score;
+        if (r.score > highest) highest = r.score;
+        if (r.score < lowest) lowest = r.score;
+        if (r.isPassed) passCount++;
+      });
+
+      const avg = totalPeserta > 0 ? (sumNilai / totalPeserta).toFixed(1) : 0;
+      const pctPass = totalPeserta > 0 ? Math.round((passCount / totalPeserta) * 100) : 0;
+
+      document.getElementById('statTotalPeserta').innerText = totalPeserta;
+      document.getElementById('statRataNilai').innerText = avg;
+      document.getElementById('statNilaiTertinggi').innerText = highest;
+      document.getElementById('statNilaiTerendah').innerText = lowest;
+      document.getElementById('statPersenTuntas').innerText = `${pctPass}%`;
+
+      const tbody = document.getElementById('guruResultsTbody');
+      const emptyMsg = document.getElementById('guruResultsEmptyMsg');
+      tbody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+      }
+      emptyMsg.style.display = 'none';
+
+      filtered.forEach((r, idx) => {
+        const tr = document.createElement('tr');
+        const durationMin = Math.round((r.durationSpentSeconds || 0) / 60);
+        const startStr = r.startTime ? new Date(r.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-';
+        const endStr = r.endTime ? new Date(r.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-';
+
+        tr.innerHTML = `
+          <td><strong>${idx + 1}</strong></td>
+          <td><a href="#" onclick="openStudentAnalysis('${escapeHTML(r.id)}'); return false;" title="Lihat analisis per butir soal" style="color:var(--primary); font-weight:700; text-decoration:underline;">${escapeHTML(r.studentName)}</a></td>
+          <td>${escapeHTML(r.studentClass)} &bull; ${escapeHTML(r.studentSchool)}</td>
+          <td>${escapeHTML(r.examTitle)} <span class="badge badge-secondary">${escapeHTML(r.examCode)}</span></td>
+          <td>${startStr} - ${endStr}</td>
+          <td>${durationMin} Menit</td>
+          <td><strong style="font-size:1.15rem; color:var(--primary);">${r.score}</strong></td>
+          <td>
+            <span class="badge ${r.isPassed ? 'badge-success' : 'badge-danger'}">
+              ${r.isPassed ? 'TUNTAS' : 'BELUM TUNTAS'}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openStudentAnalysis(resultId) {
+      const r = (currentRole === 'guru' ? scopedTeacherResults() : getStoredData(STORAGE_KEYS.RESULTS, [])).find(x => x.id === resultId);
+      if (!r) return;
+      const body = document.getElementById('studentAnalysisBody');
+      const items = Array.isArray(r.itemAnalysis) ? r.itemAnalysis : null;
+      const typeName = { PG: 'Pilihan Ganda', MCMA: 'Pilihan Ganda Kompleks (MCMA)', BS: 'Kategori (Benar/Salah)' };
+      let html = `<div style="margin-bottom:14px;"><strong style="font-size:1.1rem;">${escapeHTML(r.studentName)}</strong><br>
+        <span style="color:var(--text-muted);">${escapeHTML(r.studentClass || '')} &bull; ${escapeHTML(r.studentSchool || '')} &bull; ${escapeHTML(r.examTitle || '')}</span><br>
+        Nilai: <strong style="color:var(--primary);">${r.score}</strong> (KKM ${r.kkm || 75}) &bull; Benar ${r.correctCount ?? '-'} dari ${r.totalQuestions ?? '-'} soal</div>`;
+      if (!items || items.length === 0) {
+        html += `<p style="padding:14px; background:var(--bg-secondary, #f5f5f5); border-radius:8px;">Rincian per butir soal belum tersedia untuk hasil ini karena dikerjakan sebelum fitur analisis ditambahkan. Ujian berikutnya akan otomatis tercatat.</p>`;
+        body.innerHTML = html; openModal('studentAnalysisModal'); return;
+      }
+      const wrong = items.filter(i => !i.isCorrect);
+      const byType = {};
+      items.forEach(i => { const t = byType[i.type] = byType[i.type] || { n: 0, e: 0 }; t.n++; t.e += (typeof i.earned === 'number' ? i.earned : (i.isCorrect ? 1 : 0)); });
+      const level = p => p >= 75 ? ['Sudah kuat', 'badge-success'] : p >= 50 ? ['Perlu penguatan', 'badge-secondary'] : ['Perlu remedial', 'badge-danger'];
+      html += `<h4 style="margin:10px 0 6px;">Penguasaan per Bentuk Soal</h4><table class="table" style="width:100%;"><thead><tr><th>Bentuk Soal</th><th>Jumlah</th><th>Ketercapaian</th><th>Status</th></tr></thead><tbody>`;
+      Object.keys(byType).forEach(t => { const p = Math.round(byType[t].e / byType[t].n * 100); const [lbl, cls] = level(p);
+        html += `<tr><td>${typeName[t] || t}</td><td>${byType[t].n}</td><td>${p}%</td><td><span class="badge ${cls}">${lbl}</span></td></tr>`; });
+      html += `</tbody></table>`;
+      html += `<h4 style="margin:16px 0 6px;">Rincian per Butir Soal</h4><div style="overflow-x:auto;"><table class="table" style="width:100%;"><thead><tr><th>No</th><th>Soal</th><th>Jawaban Siswa</th><th>Kunci</th><th>Hasil</th></tr></thead><tbody>`;
+      items.forEach(i => { const partial = !i.isCorrect && i.earned > 0;
+        html += `<tr style="${i.isCorrect ? '' : 'background:rgba(239,68,68,0.06);'}"><td><strong>${i.index}</strong></td><td>${escapeHTML((i.questionText || '(soal gambar)').slice(0, 120))}<br><small style="color:var(--text-muted);">${typeName[i.type] || i.type}</small></td><td>${escapeHTML(String(i.userAns ?? '-'))}</td><td>${escapeHTML(String(i.correctAns ?? '-'))}</td><td><span class="badge ${i.isCorrect ? 'badge-success' : partial ? 'badge-secondary' : 'badge-danger'}">${i.isCorrect ? 'Benar' : partial ? 'Sebagian' : 'Salah'}</span></td></tr>`; });
+      html += `</tbody></table></div>`;
+      const pct = Math.round((items.length - wrong.length) / items.length * 100);
+      let rec;
+      if (wrong.length === 0) rec = 'Siswa menjawab semua soal dengan benar. Berikan pengayaan berupa soal tingkat lebih tinggi (HOTS).';
+      else if (pct >= 75) rec = `Siswa sudah menguasai sebagian besar materi. Berikan penguatan khusus pada soal nomor ${wrong.map(w => w.index).join(', ')} dan lanjutkan pengayaan.`;
+      else if (pct >= 50) rec = `Siswa perlu bimbingan pada soal nomor ${wrong.map(w => w.index).join(', ')}. Ulas kembali konsep terkait, berikan contoh dan latihan terbimbing.`;
+      else rec = `Siswa memerlukan remedial. Ajarkan ulang konsep dasar dari soal nomor ${wrong.map(w => w.index).join(', ')} secara bertahap, dengan pendampingan individu atau kelompok kecil.`;
+      const weakTypes = Object.keys(byType).filter(t => byType[t].e / byType[t].n < 0.75).map(t => typeName[t] || t);
+      if (weakTypes.length) rec += ` Latih juga cara mengerjakan bentuk soal: ${weakTypes.join(', ')}.`;
+      const unanswered = items.filter(i => String(i.userAns).includes('Tidak dijawab')).length;
+      if (unanswered) rec += ` Ada ${unanswered} soal tidak dijawab — perhatikan manajemen waktu dan ketelitian siswa.`;
+      html += `<h4 style="margin:16px 0 6px;">Kebutuhan Belajar & Rekomendasi Tindak Lanjut</h4><div style="padding:14px; border-left:4px solid var(--primary); background:rgba(59,130,246,0.06); border-radius:6px;">${escapeHTML(rec)}</div>`;
+      body.innerHTML = html;
+      openModal('studentAnalysisModal');
+    }
+
+    async function resetStudentProgress() {
+      if (currentRole !== 'admin') {
+        showToast('Fitur ini hanya tersedia untuk Admin.', 'error');
+        return;
+      }
+      showCustomConfirm(
+        'Semua data hasil dan progres ujian siswa akan DIHAPUS PERMANEN dari server dan tidak bisa dikembalikan. Bank soal dan daftar ujian tetap aman. Lanjutkan?',
+        'Reset Progres Siswa',
+        async () => {
+          try {
+            const res = await cloudFetch(CLOUD_URL + '/exam_results?id=not.is.null', {
+              method: 'DELETE',
+              headers: cloudHeaders({ 'Prefer': 'return=minimal' })
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            cloudCache[STORAGE_KEYS.RESULTS] = [];
+            Object.keys(localStorage)
+              .filter(k => k.startsWith('tka_pending_results_'))
+              .forEach(k => localStorage.removeItem(k));
+            localStorage.removeItem(STORAGE_KEYS.ACTIVE_SESSION);
+            renderGuruResults();
+            showToast('Seluruh progres dan hasil ujian siswa berhasil direset.', 'success');
+          } catch (err) {
+            console.error('Gagal mereset progres siswa', err);
+            showToast('Gagal mereset data di server. Periksa koneksi lalu ulangi.', 'error');
+          }
+        }
+      );
+    }
+
+    function exportResultsToCSV() {
+      const examFilter = document.getElementById('filterResultExam').value;
+      const search = document.getElementById('searchResultStudent').value.toLowerCase().trim();
+      const results = scopedTeacherResults().filter(r => (examFilter === 'ALL' || r.examId === examFilter) && (!search || r.studentName.toLowerCase().includes(search)));
+      if (results.length === 0) {
+        showToast('Belum ada data nilai siswa untuk diekspor!', 'warning');
+        return;
+      }
+
+      const headers = ['No', 'Nama Siswa', 'Kelas', 'Asal Sekolah', 'Kode Kelas', 'Judul Ujian', 'Mata Pelajaran', 'Nilai Akhir', 'KKM', 'Status Ketuntasan', 'Durasi Menit', 'Waktu Selesai'];
+      const rows = results.map((r, i) => [
+        i + 1,
+        `"${r.studentName.replace(/"/g, '""')}"`,
+        `"${r.studentClass}"`,
+        `"${r.studentSchool.replace(/"/g, '""')}"`,
+        `"${r.examCode}"`,
+        `"${r.examTitle.replace(/"/g, '""')}"`,
+        `"${r.subject}"`,
+        r.score,
+        r.kkm,
+        r.isPassed ? 'TUNTAS' : 'BELUM TUNTAS',
+        Math.round((r.durationSpentSeconds || 0) / 60),
+        r.endTime ? `"${new Date(r.endTime).toLocaleString('id-ID')}"` : '""'
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Rekap_Nilai_TKA_${selectedTeacherClass ? selectedTeacherClass.code : "kelas"}_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      showToast('Rekap nilai berhasil diekspor ke format CSV.', 'success');
+    }
+
+    function selectExamQuestions(exam, shuffle = exam.shuffleQuestions) {
+      let pool = getStoredData(STORAGE_KEYS.QUESTIONS, []).filter(q => q.packageId === exam.packageId);
+      if (shuffle) pool = [...pool].sort(() => Math.random() - 0.5);
+      return pool.slice(0, exam.questionCount);
+    }
+
+    function getClassroomPrintQuestions(examId) {
+      const exam = scopedTeacherExams().find(ex => ex.id === examId);
+      return exam ? selectExamQuestions(exam, false) : [];
+    }
+
+    function openPrintExamModal() {
+      const exams = scopedTeacherExams();
+      if (!exams.length) { showToast('Belum ada ujian untuk dicetak di kelas ini.', 'warning'); return; }
+      const select = document.getElementById('printExamSelect');
+      select.replaceChildren(...exams.map(ex => {
+        const option = document.createElement('option');
+        option.value = ex.id;
+        option.textContent = `${ex.title} — ${ex.subject}`;
+        return option;
+      }));
+      const filter = document.getElementById('filterResultExam').value;
+      if (exams.some(ex => ex.id === filter)) select.value = filter;
+      openModal('printExamModal');
+      prepareExamPrint();
+    }
+
+    function renderPrintQuestion(q, index) {
+      const box = document.querySelector('#view-siswa-exam .question-box').cloneNode(true);
+      box.classList.add('print-question');
+      box.querySelector('#displayQuestionIndex').textContent = index + 1;
+      box.querySelector('#displayQuestionTypeBadge').textContent = ({ PG: 'Pilihan Ganda', MCMA: 'Pilihan Ganda Kompleks', BS: 'Mengkategorikan Benar / Salah' })[q.type] || q.type;
+      box.querySelector('#chkReviewFlag').closest('label').remove();
+      box.querySelector('#btnPrevQuestion').parentElement.remove();
+      const stimulus = box.querySelector('#stimulusSection');
+      stimulus.style.display = q.stimulusText || q.stimulusImg ? 'block' : 'none';
+      box.querySelector('#stimulusTextDisplay').innerHTML = renderQuestionText(q.stimulusText);
+      box.querySelector('#questionTextDisplay').innerHTML = renderQuestionText(q.questionText);
+      [['stimulus', q.stimulusImg], ['question', q.questionImg]].forEach(([prefix, src]) => {
+        const wrapper = box.querySelector(`#${prefix}ImgWrapper`);
+        wrapper.style.display = src ? 'block' : 'none';
+        const img = wrapper.querySelector('img');
+        if (src) img.src = src; else img.remove();
+        wrapper.querySelector('.image-zoom-btn').remove();
+        wrapper.querySelector('.img-fail-msg').remove();
+      });
+      box.querySelector('#questionInstructionDisplay').textContent = QUESTION_INSTRUCTIONS[q.type] || '';
+      const answers = box.querySelector('#answersContainer');
+      if (q.type === 'BS') {
+        answers.innerHTML = `<table class="category-table"><thead><tr><th scope="col">Pernyataan</th><th scope="col">Benar</th><th scope="col">Salah</th></tr></thead><tbody>${(q.statements || []).map((st, i) => `<tr><td>${i + 1}. ${renderQuestionText(st.text)}</td><td><input type="radio" aria-label="Pernyataan ${i + 1}: Benar"></td><td><input type="radio" aria-label="Pernyataan ${i + 1}: Salah"></td></tr>`).join('')}</tbody></table>`;
+      } else {
+        answers.innerHTML = `<div class="option-list">${(q.options || []).map(opt => `<div class="option-item"><input type="${q.type === 'MCMA' ? 'checkbox' : 'radio'}" class="${q.type === 'MCMA' ? 'option-checkbox' : 'option-radio'}" aria-label="${escapeHTML(opt.key)}"><span class="option-key">${escapeHTML(opt.key)}.</span><div class="option-content"><div>${renderQuestionText(opt.text)}</div>${opt.img ? `<div class="print-option-image"><img src="${escapeHTML(opt.img)}" alt="Gambar pilihan ${escapeHTML(opt.key)}"></div>` : ''}</div></div>`).join('')}</div>`;
+      }
+      box.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+      box.querySelectorAll('[onclick], [onchange]').forEach(el => { el.removeAttribute('onclick'); el.removeAttribute('onchange'); });
+      box.querySelectorAll('input').forEach(el => { el.checked = false; el.tabIndex = -1; });
+      return box;
+    }
+
+    let printPreparation = 0;
+    let preparedPrintExamId = '';
+    async function prepareExamPrint() {
+      const version = ++printPreparation;
+      preparedPrintExamId = '';
+      const button = document.getElementById('printExamButton');
+      button.disabled = true;
+      const preview = document.getElementById('printExamPreview');
+      preview.replaceChildren();
+      const status = document.getElementById('printExamStatus');
+      const examId = document.getElementById('printExamSelect').value;
+      const exam = scopedTeacherExams().find(ex => ex.id === examId);
+      const questions = getClassroomPrintQuestions(examId);
+      if (!exam || !questions.length) { status.textContent = 'Tidak ada soal pada paket ujian ini.'; return; }
+      if (questions.length < exam.questionCount) { status.textContent = 'Jumlah soal pada bank soal tidak mencukupi pengaturan ujian.'; return; }
+      status.textContent = 'Menyiapkan soal dan gambar…';
+      const heading = document.createElement('header');
+      heading.className = 'print-exam-heading';
+      heading.innerHTML = `<h2>${escapeHTML(exam.title)}</h2><p>${escapeHTML(exam.subject)} · Kode Kelas ${escapeHTML(exam.classroomCode || exam.code)} · ${questions.length} Soal · ${exam.durationMinutes} Menit</p><p>Nama: ____________________ &nbsp; Kelas: ____________</p>${exam.shuffleQuestions ? '<p>Versi cetak: urutan bank soal. Urutan dan pilihan soal siswa dapat berbeda karena pengacakan.</p>' : ''}`;
+      preview.append(heading, ...questions.map(renderPrintQuestion));
+      const images = [...preview.querySelectorAll('img')];
+      const loaded = await Promise.all(images.map(img => img.decode().then(() => true, () => false)));
+      await document.fonts.ready;
+      if (version !== printPreparation) return;
+      if (loaded.some(ok => !ok)) { status.textContent = 'Ada gambar yang gagal dimuat. Periksa koneksi atau URL gambar, lalu pilih ulang ujian.'; return; }
+      preparedPrintExamId = examId;
+      button.disabled = false;
+      status.textContent = 'Pilih “Simpan sebagai PDF” pada jendela cetak untuk mengunduh soal.';
+    }
+
+    function printSelectedExam() {
+      if (document.getElementById('printExamButton').disabled || !scopedTeacherExams().some(ex => ex.id === preparedPrintExamId)) return;
+      const oldTitle = document.title;
+      document.title = `Soal_TKA_${selectedTeacherClass.code}_${preparedPrintExamId}`;
+      window.print();
+      document.title = oldTitle;
+    }
+
+    function openStudentLoginModal() {
+      updateStudentLoginPackageOptions();
+      openModal('studentLoginModal');
+    }
+
+    function updateStudentLoginPackageOptions() {
+      const subj = document.getElementById('sLoginSubject').value;
+      const pkgSelect = document.getElementById('sLoginPackage');
+      pkgSelect.innerHTML = '';
+      const matched = PACKAGES_CONFIG.filter(p => p.subject === subj);
+      matched.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.innerText = p.name;
+        pkgSelect.appendChild(opt);
+      });
+    }
+
+    async function handleStudentLogin(e) {
+      e.preventDefault();
+      await cloudRefresh();
+      const name = document.getElementById('sLoginName').value.trim();
+      const sClass = document.getElementById('sLoginClass').value.trim();
+      const school = document.getElementById('sLoginSchool').value.trim();
+      const subject = document.getElementById('sLoginSubject').value;
+      const pkgId = document.getElementById('sLoginPackage').value;
+      const code = document.getElementById('sLoginCode').value.trim().toUpperCase();
+
+      if (!name || !sClass || !school || !code) {
+        showToast('Seluruh formulir wajib diisi lengkap!', 'warning');
+        return;
+      }
+
+      // Validate exam code against active teacher exams
+      const exams = getStoredData(STORAGE_KEYS.EXAMS, []);
+      const matchedExam = exams.find(ex => (ex.classroomCode || ex.code) === code && ex.subject === subject && ex.packageId === pkgId && ex.status === 'OPEN');
+
+      if (!matchedExam) {
+        showCustomAlert(`Kode kelas <strong>"${escapeHTML(code)}"</strong> tidak ditemukan. Pastikan Anda memasukkan kode kelas yang diberikan oleh Guru dan pilih paket ujian yang sesuai.`, 'Kode Kelas Tidak Ditemukan');
+        return;
+      }
+
+      if (matchedExam.status !== 'OPEN') {
+        showCustomAlert(`Ujian dengan kode <strong>"${escapeHTML(code)}"</strong> saat ini berstatus <strong>DITUTUP</strong> oleh Guru.`, 'Ujian Ditutup');
+        return;
+      }
+
+      // Check date bounds if configured
+      const now = new Date();
+      if (matchedExam.startDate && new Date(matchedExam.startDate) > now) {
+        showCustomAlert('Ujian ini belum dibuka sesuai jadwal mulai.', 'Belum Waktunya');
+        return;
+      }
+      if (matchedExam.endDate && new Date(matchedExam.endDate) < now) {
+        showCustomAlert('Ujian ini sudah melewati batas waktu jadwal pengerjaan.', 'Ujian Berakhir');
+        return;
+      }
+
+      // Match subject & package check
+      if (matchedExam.subject !== subject || matchedExam.packageId !== pkgId) {
+        const correctPkg = PACKAGES_CONFIG.find(p => p.id === matchedExam.packageId) || { name: matchedExam.packageId };
+        showCustomAlert(`Ujian dengan kode "${escapeHTML(code)}" adalah mata pelajaran <strong>${matchedExam.subject} (${correctPkg.name})</strong>. Formulir telah disesuaikan secara otomatis.`, 'Informasi Paket');
+        document.getElementById('sLoginSubject').value = matchedExam.subject;
+        updateStudentLoginPackageOptions();
+        document.getElementById('sLoginPackage').value = matchedExam.packageId;
+      }
+
+      // Check if student already submitted this exam
+      const results = JSON.parse(localStorage.getItem('tka_own_results') || '[]');
+      const alreadySubmitted = results.some(r => r.examId === matchedExam.id && r.studentName.toLowerCase() === name.toLowerCase());
+      if (alreadySubmitted) {
+        showCustomAlert(`Siswa atas nama <strong>"${escapeHTML(name)}"</strong> telah menyelesaikan ujian ini sebelumnya. Pengiriman ganda tidak diizinkan.`, 'Sudah Mengerjakan');
+        return;
+      }
+
+      // Prepare instructions screen
+      pendingExamData = {
+        student: { name, class: sClass, school },
+        exam: matchedExam
+      };
+
+      closeModal('studentLoginModal');
+
+      // Populate instruction view
+      document.getElementById('instrExamTitle').innerText = matchedExam.title;
+      const pkgObj = PACKAGES_CONFIG.find(p => p.id === matchedExam.packageId) || { name: matchedExam.packageId };
+      document.getElementById('instrExamSubtitle').innerText = `${matchedExam.subject} &bull; ${pkgObj.name}`;
+      document.getElementById('instrStudentName').innerText = name;
+      document.getElementById('instrStudentClass').innerText = sClass;
+      document.getElementById('instrStudentSchool').innerText = school;
+      document.getElementById('instrExamCode').innerText = matchedExam.classroomCode || matchedExam.code;
+      document.getElementById('instrQuestionCount').innerText = matchedExam.questionCount;
+      document.getElementById('instrDuration').innerText = matchedExam.durationMinutes;
+
+      navigateTo('siswa-instruksi');
+    }
+
+    function cancelStudentExam() {
+      pendingExamData = null;
+      navigateTo('portal');
+    }
+
+    function startStudentExamSession() {
+      if (!pendingExamData) {
+        navigateTo('portal');
+        return;
+      }
+
+      const exam = pendingExamData.exam;
+      const student = pendingExamData.student;
+      const examQuestions = selectExamQuestions(exam);
+      if (examQuestions.length === 0) {
+        showCustomAlert('Paket soal tidak memiliki butir soal! Hubungi guru pengampu.', 'Kesalahan Bank Soal');
+        return;
+      }
+
+      // Create new session
+      const now = Date.now();
+      const endTimestamp = now + (exam.durationMinutes * 60 * 1000);
+
+      const session = {
+        classroomCode: exam.classroomCode || exam.code,
+        examId: exam.id,
+        examCode: exam.classroomCode || exam.code,
+        examTitle: exam.title,
+        subject: exam.subject,
+        packageId: exam.packageId,
+        kkm: exam.kkm,
+        durationMinutes: exam.durationMinutes,
+        showScore: exam.showScore,
+        showDiscussion: exam.showDiscussion,
+        studentName: student.name,
+        studentClass: student.class,
+        studentSchool: student.school,
+        questions: examQuestions,
+        answers: {}, // { [questionId]: selectedValue }
+        flagged: {}, // { [questionId]: true/false }
+        startTimestamp: now,
+        endTimestamp: endTimestamp,
+        currentIndex: 0,
+        isSubmitted: false
+      };
+
+      setStoredData(STORAGE_KEYS.ACTIVE_SESSION, session);
+      launchExamRoom(session);
+    }
+
+    function launchExamRoom(session) {
+      document.getElementById('examRoomSubject').innerText = session.subject;
+      document.getElementById('examRoomTitle').innerText = session.examTitle;
+      document.getElementById('examRoomStudentName').innerText = session.studentName;
+      document.getElementById('examRoomStudentClass').innerText = session.studentClass;
+
+      navigateTo('siswa-exam');
+      renderQuestionInExamRoom(session.currentIndex);
+      startExamTimer();
+      updateAutosaveIndicator(true);
+    }
+
+    function startExamTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+
+      function update() {
+        const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+        if (!session || session.isSubmitted) {
+          clearInterval(timerInterval);
+          return;
+        }
+
+        const now = Date.now();
+        const diff = session.endTimestamp - now;
+
+        if (diff <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById('examTimerText').innerText = '00:00:00';
+          showToast('Waktu ujian telah habis! Mengirim lembar jawaban otomatis...', 'warning');
+          autoSubmitOnTimeout();
+          return;
+        }
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const pad = num => String(num).padStart(2, '0');
+        const timerBox = document.getElementById('examTimerDisplay');
+        const timerText = document.getElementById('examTimerText');
+
+        timerText.innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+        // Warning under 5 minutes
+        if (diff < 5 * 60 * 1000) {
+          timerBox.classList.add('timer-warning');
+        } else {
+          timerBox.classList.remove('timer-warning');
+        }
+      }
+
+      update();
+      timerInterval = setInterval(update, 1000);
+    }
+
+    function renderQuestionInExamRoom(index) {
+      const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (!session) return;
+
+      session.currentIndex = index;
+      setStoredData(STORAGE_KEYS.ACTIVE_SESSION, session);
+
+      const q = session.questions[index];
+      if (!q) return;
+
+      document.getElementById('displayQuestionIndex').innerText = index + 1;
+      
+      const badgeType = document.getElementById('displayQuestionTypeBadge');
+      if (q.type === 'PG') badgeType.innerText = 'Pilihan Ganda';
+      else if (q.type === 'MCMA') badgeType.innerText = 'Pilihan Ganda Kompleks';
+      else if (q.type === 'BS') badgeType.innerText = 'Mengkategorikan Benar / Salah';
+      document.getElementById('questionInstructionDisplay').innerText = QUESTION_INSTRUCTIONS[q.type] || '';
+
+      // Review checkbox state
+      document.getElementById('chkReviewFlag').checked = !!session.flagged[q.id];
+
+      // Stimulus render
+      const stimulusSection = document.getElementById('stimulusSection');
+      if (q.stimulusText || q.stimulusImg) {
+        stimulusSection.style.display = 'block';
+        document.getElementById('stimulusTextDisplay').innerHTML = renderQuestionText(q.stimulusText);
+        const imgWrapper = document.getElementById('stimulusImgWrapper');
+        if (q.stimulusImg) {
+          imgWrapper.style.display = 'block';
+          const imgEl = document.getElementById('stimulusImgDisplay');
+          imgEl.src = q.stimulusImg;
+          imgEl.style.display = 'block';
+          document.getElementById('stimulusImgFail').style.display = 'none';
+          imgEl.onerror = () => {
+            imgEl.style.display = 'none';
+            document.getElementById('stimulusImgFail').style.display = 'block';
+          };
+        } else {
+          imgWrapper.style.display = 'none';
+        }
+      } else {
+        stimulusSection.style.display = 'none';
+      }
+
+      // Question body render
+      document.getElementById('questionTextDisplay').innerHTML = renderQuestionText(q.questionText);
+      const qImgWrapper = document.getElementById('questionImgWrapper');
+      if (q.questionImg) {
+        qImgWrapper.style.display = 'block';
+        const imgEl = document.getElementById('questionImgDisplay');
+        imgEl.src = q.questionImg;
+        imgEl.style.display = 'block';
+        document.getElementById('questionImgFail').style.display = 'none';
+        imgEl.onerror = () => {
+          imgEl.style.display = 'none';
+          document.getElementById('questionImgFail').style.display = 'block';
+        };
+      } else {
+        qImgWrapper.style.display = 'none';
+      }
+
+      // Options render
+      const answersContainer = document.getElementById('answersContainer');
+      answersContainer.innerHTML = '';
+
+      if (q.type === 'PG') {
+        const savedAnswer = session.answers[q.id] || null;
+        const list = document.createElement('div');
+        list.className = 'option-list';
+
+        (q.options || []).forEach(opt => {
+          const isSelected = savedAnswer === opt.key;
+          const optDiv = document.createElement('div');
+          optDiv.className = `option-item ${isSelected ? 'selected' : ''}`;
+          optDiv.onclick = () => selectPGOption(q.id, opt.key);
+
+          optDiv.innerHTML = `
+            <input type="radio" class="option-radio" name="student_opt_${q.id}" ${isSelected ? 'checked' : ''}>
+            <span class="option-key">${opt.key}.</span>
+            <div class="option-content">
+              <div>${renderQuestionText(opt.text)}</div>
+              ${opt.img ? `<div style="margin-top:8px;"><img src="${escapeHTML(opt.img)}" style="max-height:160px; object-fit:contain; border-radius:6px;" onclick="event.stopPropagation(); zoomImage(this.src);"></div>` : ''}
+            </div>
+          `;
+          list.appendChild(optDiv);
+        });
+        answersContainer.appendChild(list);
+      } else if (q.type === 'MCMA') {
+        const savedAnswers = Array.isArray(session.answers[q.id]) ? session.answers[q.id] : [];
+        const list = document.createElement('div');
+        list.className = 'option-list';
+
+        (q.options || []).forEach(opt => {
+          const isChecked = savedAnswers.includes(opt.key);
+          const optDiv = document.createElement('div');
+          optDiv.className = `option-item ${isChecked ? 'selected' : ''}`;
+          optDiv.onclick = () => toggleMCMAOption(q.id, opt.key);
+
+          optDiv.innerHTML = `
+            <input type="checkbox" class="option-checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation(); toggleMCMAOption('${q.id}', '${opt.key}');">
+            <span class="option-key">${opt.key}.</span>
+            <div class="option-content">
+              <div>${renderQuestionText(opt.text)}</div>
+              ${opt.img ? `<div style="margin-top:8px;"><img src="${escapeHTML(opt.img)}" style="max-height:160px; object-fit:contain; border-radius:6px;" onclick="event.stopPropagation(); zoomImage(this.src);"></div>` : ''}
+            </div>
+          `;
+          list.appendChild(optDiv);
+        });
+        answersContainer.appendChild(list);
+      } else if (q.type === 'BS') {
+        const savedAnswers = session.answers[q.id] || {};
+        const table = document.createElement('table');
+        table.className = 'category-table';
+        table.innerHTML = '<thead><tr><th scope="col">Pernyataan</th><th scope="col">Benar</th><th scope="col">Salah</th></tr></thead>';
+        const tbody = document.createElement('tbody');
+
+        (q.statements || []).forEach((st, idx) => {
+          const userChoice = savedAnswers[idx];
+          const row = document.createElement('tr');
+
+          row.innerHTML = `
+            <td>${idx + 1}. ${renderQuestionText(st.text)}</td>
+            <td><input aria-label="Pernyataan ${idx + 1}: Benar" type="radio" name="bs_ans_${idx}" value="BENAR" ${userChoice === 'BENAR' ? 'checked' : ''} onchange="saveBSAnswer('${q.id}', ${idx}, 'BENAR')"></td>
+            <td><input aria-label="Pernyataan ${idx + 1}: Salah" type="radio" name="bs_ans_${idx}" value="SALAH" ${userChoice === 'SALAH' ? 'checked' : ''} onchange="saveBSAnswer('${q.id}', ${idx}, 'SALAH')"></td>
+          `;
+          tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        answersContainer.appendChild(table);
+      }
+
+      // Update Navigation Buttons state
+      const btnPrev = document.getElementById('btnPrevQuestion');
+      const btnNext = document.getElementById('btnNextQuestion');
+      btnPrev.disabled = index === 0;
+      if (index === session.questions.length - 1) {
+        btnNext.innerText = 'Akhiri ujian';
+        btnNext.onclick = confirmFinishExam;
+      } else {
+        btnNext.innerText = 'Berikutnya →';
+        btnNext.onclick = goToNextQuestion;
+      }
+
+      renderPalette(session);
+    }
+
+    function selectPGOption(questionId, key) {
+      const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (!session) return;
+      session.answers[questionId] = key;
+      setStoredData(STORAGE_KEYS.ACTIVE_SESSION, session);
+      updateAutosaveIndicator();
+      renderQuestionInExamRoom(session.currentIndex);
+    }
+
+    function toggleMCMAOption(questionId, key) {
+      const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (!session) return;
+      let current = Array.isArray(session.answers[questionId]) ? session.answers[questionId] : [];
+      if (current.includes(key)) {
+        current = current.filter(k => k !== key);
+      } else {
+        current.push(key);
+      }
+      session.answers[questionId] = current;
+      setStoredData(STORAGE_KEYS.ACTIVE_SESSION, session);
+      updateAutosaveIndicator();
+      renderQuestionInExamRoom(session.currentIndex);
+    }
+
+    function saveBSAnswer(questionId, statementIdx, value) {
+      const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (!session) return;
+      if (!session.answers[questionId] || typeof session.answers[questionId] !== 'object') {
+        session.answers[questionId] = {};
+      }
+      session.answers[questionId][statementIdx] = value;
+      setStoredData(STORAGE_KEYS.ACTIVE_SESSION, session);
+      updateAutosaveIndicator();
+      renderPalette(session);
+    }
+
+    function toggleFlagQuestion() {
+      const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (!session) return;
+      const q = session.questions[session.currentIndex];
+      const isChecked = document.getElementById('chkReviewFlag').checked;
+      session.flagged[q.id] = isChecked;
+      setStoredData(STORAGE_KEYS.ACTIVE_SESSION, session);
+      renderPalette(session);
+    }
+
+    function goToPrevQuestion() {
+      const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (session && session.currentIndex > 0) {
+        renderQuestionInExamRoom(session.currentIndex - 1);
+      }
+    }
+
+    function goToNextQuestion() {
+      const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (session && session.currentIndex < session.questions.length - 1) {
+        renderQuestionInExamRoom(session.currentIndex + 1);
+      }
+    }
+
+    function updateAutosaveIndicator(silent = false) {
+      const dot = document.getElementById('autosaveDot');
+      const text = document.getElementById('autosaveStatusText');
+      const ts = document.getElementById('autosaveTimestamp');
+      
+      dot.style.background = 'var(--success)';
+      text.innerText = 'Tersimpan otomatis';
+      ts.innerText = new Date().toLocaleTimeString();
+    }
+
+    function renderPalette(session) {
+      const grid = document.getElementById('questionPaletteGrid');
+      grid.innerHTML = '';
+      let answeredCount = 0;
+
+      session.questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'palette-btn';
+        btn.innerText = idx + 1;
+        btn.onclick = () => renderQuestionInExamRoom(idx);
+
+        if (idx === session.currentIndex) {
+          btn.classList.add('active');
+        }
+
+        // Determine if answered
+        let hasAnswer = false;
+        const ans = session.answers[q.id];
+        if (q.type === 'PG' && typeof ans === 'string' && ans) hasAnswer = true;
+        else if (q.type === 'MCMA' && Array.isArray(ans) && ans.length > 0) hasAnswer = true;
+        else if (q.type === 'BS' && ans && typeof ans === 'object') {
+          // Answered if all 3 are filled
+          if (ans[0] && ans[1] && ans[2]) hasAnswer = true;
+        }
+
+        if (hasAnswer) answeredCount++;
+
+        if (session.flagged[q.id]) {
+          btn.classList.add('flagged');
+        } else if (hasAnswer) {
+          btn.classList.add('answered');
+        }
+
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('paletteAnsweredCount').innerText = `${answeredCount}/${session.questions.length}`;
+    }
+
+    function confirmFinishExam() {
+      const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (!session) return;
+
+      let answered = 0;
+      let flagged = 0;
+
+      session.questions.forEach(q => {
+        const ans = session.answers[q.id];
+        let hasAns = false;
+        if (q.type === 'PG' && typeof ans === 'string' && ans) hasAns = true;
+        else if (q.type === 'MCMA' && Array.isArray(ans) && ans.length > 0) hasAns = true;
+        else if (q.type === 'BS' && ans && ans[0] && ans[1] && ans[2]) hasAns = true;
+
+        if (hasAns) answered++;
+        if (session.flagged[q.id]) flagged++;
+      });
+
+      const unanswered = session.questions.length - answered;
+
+      document.getElementById('confirmAnsweredCount').innerText = answered;
+      document.getElementById('confirmUnansweredCount').innerText = unanswered;
+      document.getElementById('confirmFlaggedCount').innerText = flagged;
+
+      openModal('finishConfirmModal');
+    }
+
+    function autoSubmitOnTimeout() {
+      executeSubmitExam(true);
+    }
+
+    function executeSubmitExam(isAuto = false) {
+      closeModal('finishConfirmModal');
+      if (timerInterval) clearInterval(timerInterval);
+
+      const session = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (!session || session.isSubmitted) return;
+
+      session.isSubmitted = true;
+      const finishTime = Date.now();
+      const durationSpentSeconds = Math.max(1, Math.round((finishTime - session.startTimestamp) / 1000));
+
+      // SCORING ALGORITHM
+      let totalEarnedScore = 0;
+      let totalMaxWeight = 0;
+      let correctQuestionsCount = 0;
+      const reviewDetails = [];
+
+      session.questions.forEach((q, idx) => {
+        const weight = q.weight || 1;
+        totalMaxWeight += weight;
+        let earnedForThis = 0;
+        let isFullyCorrect = false;
+
+        const userAns = session.answers[q.id];
+
+        if (q.type === 'PG') {
+          if (userAns === q.correctKey) {
+            earnedForThis = weight;
+            isFullyCorrect = true;
+            correctQuestionsCount++;
+          }
+          reviewDetails.push({
+            index: idx + 1,
+            questionText: q.questionText,
+            type: q.type,
+            userAns: userAns || '(Tidak dijawab)',
+            correctAns: q.correctKey,
+            isCorrect: isFullyCorrect, earned: isFullyCorrect ? 1 : 0,
+            discussion: q.discussion
+          });
+        } else if (q.type === 'MCMA') {
+          const userArr = Array.isArray(userAns) ? [...userAns].sort() : [];
+          const keyArr = Array.isArray(q.correctKeys) ? [...q.correctKeys].sort() : [];
+          
+          // Full score if and only if all correct chosen and no wrong chosen
+          const isSame = userArr.length === keyArr.length && userArr.every((val, i) => val === keyArr[i]);
+          if (isSame) {
+            earnedForThis = weight;
+            isFullyCorrect = true;
+            correctQuestionsCount++;
+          }
+          reviewDetails.push({
+            index: idx + 1,
+            questionText: q.questionText,
+            type: q.type,
+            userAns: userArr.join(', ') || '(Tidak dijawab)',
+            correctAns: keyArr.join(', '),
+            isCorrect: isFullyCorrect, earned: isFullyCorrect ? 1 : 0,
+            discussion: q.discussion
+          });
+        } else if (q.type === 'BS') {
+          let correctStatements = 0;
+          const userObj = userAns || {};
+          (q.statements || []).forEach((st, sIdx) => {
+            const userChoice = userObj[sIdx];
+            const correctChoice = st.correct ? 'BENAR' : 'SALAH';
+            if (userChoice === correctChoice) {
+              correctStatements++;
+            }
+          });
+          // Benar/Salah score is divided proportionally
+          earnedForThis = (correctStatements / 3) * weight;
+          if (correctStatements === 3) {
+            isFullyCorrect = true;
+            correctQuestionsCount++;
+          }
+          reviewDetails.push({
+            index: idx + 1,
+            questionText: q.questionText,
+            type: q.type,
+            userAns: `${correctStatements} dari 3 pernyataan tepat`,
+            correctAns: (q.statements || []).map((s, i) => `${i + 1}:${s.correct ? 'B' : 'S'}`).join(' | '),
+            isCorrect: isFullyCorrect, earned: correctStatements / 3,
+            discussion: q.discussion
+          });
+        }
+
+        totalEarnedScore += earnedForThis;
+      });
+
+      const finalScore = totalMaxWeight > 0 ? Math.round((totalEarnedScore / totalMaxWeight) * 100) : 0;
+      const isPassed = finalScore >= (session.kkm || 75);
+
+      // Save Student Result Record
+      const resultRecord = {
+        id: 'res_' + Date.now(),
+        classroomCode: session.classroomCode || session.examCode,
+        examId: session.examId,
+        examCode: session.examCode,
+        examTitle: session.examTitle,
+        subject: session.subject,
+        packageId: session.packageId,
+        studentName: session.studentName,
+        studentClass: session.studentClass,
+        studentSchool: session.studentSchool,
+        startTime: session.startTimestamp,
+        endTime: finishTime,
+        durationSpentSeconds: durationSpentSeconds,
+        score: finalScore,
+        kkm: session.kkm || 75,
+        isPassed: isPassed,
+        totalQuestions: session.questions.length,
+        correctCount: correctQuestionsCount,
+        itemAnalysis: reviewDetails.map(d => ({
+          index: d.index, type: d.type,
+          questionText: String(d.questionText || '').slice(0, 300),
+          userAns: d.userAns, correctAns: d.correctAns,
+          isCorrect: d.isCorrect, earned: d.earned
+        }))
+      };
+
+      const results = getStoredData(STORAGE_KEYS.RESULTS, []);
+      results.push(resultRecord);
+      setStoredData(STORAGE_KEYS.RESULTS, results);
+
+      // Clear active session to prevent double submit
+      localStorage.removeItem(STORAGE_KEYS.ACTIVE_SESSION);
+
+      // Show completion view
+      showCompletionScreen(resultRecord, session, reviewDetails);
+    }
+
+    function showCompletionScreen(record, session, reviewDetails) {
+      navigateTo('siswa-selesai');
+
+      const scoreCard = document.getElementById('scoreDisplayCard');
+      const scoreNotice = document.getElementById('scoreHiddenNotice');
+      const reviewSection = document.getElementById('examReviewSection');
+
+      if (session.showScore) {
+        scoreCard.style.display = 'block';
+        scoreNotice.style.display = 'none';
+        document.getElementById('studentFinalScore').innerText = record.score;
+        document.getElementById('studentKkmDisplay').innerText = record.kkm;
+
+        const passBadge = document.getElementById('studentPassBadge');
+        if (record.isPassed) {
+          passBadge.className = 'badge badge-success';
+          passBadge.innerText = 'TUNTAS';
+        } else {
+          passBadge.className = 'badge badge-danger';
+          passBadge.innerText = 'BELUM TUNTAS';
+        }
+      } else {
+        scoreCard.style.display = 'none';
+        scoreNotice.style.display = 'block';
+      }
+
+      if (session.showDiscussion) {
+        reviewSection.style.display = 'block';
+        const list = document.getElementById('examReviewItemsList');
+        list.innerHTML = '';
+        reviewDetails.forEach(item => {
+          const div = document.createElement('div');
+          div.style.padding = '14px 18px';
+          div.style.borderRadius = 'var(--radius-md)';
+          div.style.background = 'var(--bg-card)';
+          div.style.border = `2px solid ${item.isCorrect ? 'var(--success)' : 'var(--danger)'}`;
+
+          div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <strong>Nomor ${item.index}</strong>
+              <span class="badge ${item.isCorrect ? 'badge-success' : 'badge-danger'}">
+                ${item.isCorrect ? 'Jawaban Benar' : 'Jawaban Salah'}
+              </span>
+            </div>
+            <div style="font-size:14px; margin-bottom:8px;">${renderQuestionText(item.questionText)}</div>
+            <div style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">
+              Jawaban Anda: <strong>${renderQuestionText(item.userAns)}</strong> | Kunci Benar: <strong>${renderQuestionText(item.correctAns)}</strong>
+            </div>
+            ${item.discussion ? `<div style="font-size:13px; background:var(--bg-body); padding:8px 12px; border-radius:6px; margin-top:8px; border-left:3px solid var(--primary); white-space:pre-line;"><strong>Pembahasan:</strong> ${renderQuestionText(item.discussion)}</div>` : ''}
+          `;
+          list.appendChild(div);
+        });
+      } else {
+        reviewSection.style.display = 'none';
+      }
+    }
+
+    function zoomImage(url) {
+      if (!url) return;
+      document.getElementById('zoomedImageEl').src = url;
+      openModal('imageZoomModal');
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const loader = document.createElement('div');
+      loader.id = 'cloudLoader';
+      loader.className = 'cloud-loader';
+      loader.textContent = 'Memuat data dari server...';
+      document.body.appendChild(loader);
+      const bridge = await bridgeReady();
+      document.getElementById('appStyles').href = bridge.styles;
+      setTheme(localStorage.getItem('tka_theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+      await cloudRefresh();
+      loader.remove();
+      retryPendingResults();
+      guruPollTimer = setInterval(() => { if (currentRole === 'guru') refreshCurrentView(); }, 15000);
+
+      // Check if student has active session to recover upon reload
+      const activeSession = getStoredData(STORAGE_KEYS.ACTIVE_SESSION, null);
+      if (activeSession && !activeSession.isSubmitted) {
+        const now = Date.now();
+        if (activeSession.endTimestamp > now) {
+          // Session is valid and still active
+          showToast('Sesi ujian sebelumnya berhasil dipulihkan dari penyimpanan lokal.', 'info');
+          launchExamRoom(activeSession);
+          return;
+        } else {
+          // Timeout occurred while offline/refreshed
+          showToast('Waktu ujian telah berakhir.', 'warning');
+          autoSubmitOnTimeout();
+          return;
+        }
+      }
+
+      // Default start view
+      navigateTo('portal');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX exam_result_student_once ON public.exam_results ((data->>'examId'), lower(data->>'studentName'));
