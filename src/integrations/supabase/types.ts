@@ -53,14 +53,17 @@ export type Database = {
       teacher_classroom_accounts: {
         Row: {
           classroom_code: string
+          teacher_key: string
           user_id: string
         }
         Insert: {
           classroom_code: string
+          teacher_key?: string
           user_id: string
         }
         Update: {
           classroom_code?: string
+          teacher_key?: string
           user_id?: string
         }
         Relationships: [

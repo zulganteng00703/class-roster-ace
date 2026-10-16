@@ -12,7 +12,7 @@
   <header class="app-header">
     <div class="header-container">
       <a href="#" class="brand" onclick="navigateTo('portal'); return false;">
-        <img class="brand-logo brand-logo-light" src="/__l5e/assets-v1/f9376928-3289-4041-abe1-26287a8006ef/logo-light.png" alt="SimulasiTKA.id" height="44"><img class="brand-logo brand-logo-dark" src="/__l5e/assets-v1/9b5c76bf-473a-4169-9291-9a391aacb874/logo-dark.png" alt="SimulasiTKA.id" height="44">
+        <img class="brand-logo" src="/__l5e/assets-v1/dda71512-8d0d-41fd-9a74-b24021b3b79b/logo-batamy.png" alt="BATAMY — Banawa TKA Academy" height="44">
       </a>
       <div class="header-nav" id="topNavControls"><button class="btn btn-outline btn-sm" id="signOutButton" hidden onclick="signOut()">Keluar</button>
         <div class="theme-picker" aria-label="Tema tampilan">
@@ -201,8 +201,8 @@
       <form id="teacherClassForm" class="teacher-class-form" hidden onsubmit="submitTeacherClass(event)">
         <span id="teacherFormSymbol" class="teacher-symbol teacher-symbol-key"><svg viewBox="0 0 24 24"><circle cx="15" cy="8" r="5"/><path d="m11 12-8 8v-4l3-3h3l2-2"/></svg></span>
         <h3 id="teacherFormTitle">Masuk ke Kelas</h3><p id="teacherFormDesc">Masukkan kode kelas yang sudah dibuat sebelumnya</p>
+        <label class="sr-only" for="teacherName">Nama Guru</label><input class="form-control" id="teacherName" placeholder="Nama Guru" maxlength="200" required>
         <div id="teacherCreateFields" hidden>
-          <label class="sr-only" for="teacherName">Nama Guru</label><input class="form-control" id="teacherName" placeholder="Nama Guru" maxlength="200">
           <label class="sr-only" for="teacherSchool">Nama Sekolah</label><select class="form-control" id="teacherSchool"><option value="">Pilih Sekolah</option><option value="SDN1BNW">SDN 1 BNW</option><option value="SDN2BNW">SDN 2 BNW</option><option value="SDN3BNW">SDN 3 BNW</option><option value="SDN4BNW">SDN 4 BNW</option><option value="SDN5BNW">SDN 5 BNW</option><option value="SDN6BNW">SDN 6 BNW</option><option value="SDN7BNW">SDN 7 BNW</option><option value="SDN8BNW">SDN 8 BNW</option><option value="SDN9BNW">SDN 9 BNW</option><option value="SDN10BNW">SDN 10 BNW</option><option value="SDN11BNW">SDN 11 BNW</option><option value="SDN12BNW">SDN 12 BNW</option><option value="SDN13BNW">SDN 13 BNW</option><option value="SDN14BNW">SDN 14 BNW</option><option value="SDN15BNW">SDN 15 BNW</option><option value="SDN16BNW">SDN 16 BNW</option><option value="SDN17BNW">SDN 17 BNW</option><option value="SDN18BNW">SDN 18 BNW</option><option value="SDN19BNW">SDN 19 BNW</option><option value="SDN20BNW">SDN 20 BNW</option><option value="SDN22BNW">SDN 22 BNW</option><option value="SDN23BNW">SDN 23 BNW</option><option value="SDN24BNW">SDN 24 BNW</option><option value="SDN25BNW">SDN 25 BNW</option><option value="SDN26BNW">SDN 26 BNW</option><option value="SDYPPI">SD YPPI</option><option value="SDMUH1">SD MUH 1</option><option value="SDMUH2">SD MUH 2</option><option value="SDITIK">SDIT IK</option></select>
         </div>
         <label class="sr-only" for="teacherClassCode">Kode kelas</label><input class="form-control teacher-code-input" id="teacherClassCode" placeholder="Masukkan kode kelas (contoh: SDN1BNW)" required pattern="[A-Za-z0-9]{4,12}" minlength="4" maxlength="12" autocomplete="off">
@@ -963,7 +963,7 @@
     async function cloudSaveKV(key, data) {
       try {
         if (key === STORAGE_KEYS.EXAMS && currentRole === 'guru') {
-          await (await bridgeReady()).saveExams(data.filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code));
+          await (await bridgeReady()).saveExams(data.filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code && (ex.teacherKey || '') === (selectedTeacherClass.teacher_key || '')));
           return true;
         }
         const res = await cloudFetch(CLOUD_URL + '/app_kv?on_conflict=key', {
@@ -1063,11 +1063,11 @@
     let selectedTeacherClass = null;
     let teacherFormMode = 'join';
     function scopedTeacherExams() {
-      return getStoredData(STORAGE_KEYS.EXAMS, []).filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code);
+      return getStoredData(STORAGE_KEYS.EXAMS, []).filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code && (ex.teacherKey || '') === (selectedTeacherClass.teacher_key || ''));
     }
     function scopedTeacherResults() {
       const ids = new Set(scopedTeacherExams().map(ex => ex.id));
-      return getStoredData(STORAGE_KEYS.RESULTS, []).filter(result => selectedTeacherClass && (result.classroomCode ? result.classroomCode === selectedTeacherClass.code : ids.has(result.examId)));
+      return getStoredData(STORAGE_KEYS.RESULTS, []).filter(result => selectedTeacherClass && ids.has(result.examId));
     }
     function renderTeacherPortal() {
       const selected = Boolean(selectedTeacherClass);
@@ -1108,17 +1108,17 @@
       document.getElementById('teacherClassForm').hidden = false;
       document.getElementById('teacherClassForm').reset();
       document.getElementById('teacherCreateFields').hidden = !create;
-      document.getElementById('teacherName').required = create;
+      document.getElementById('teacherName').required = true;
       document.getElementById('teacherSchool').required = create;
       document.getElementById('teacherClassCode').hidden = create;
       document.getElementById('teacherClassCode').required = !create;
       document.getElementById('teacherClassError').hidden = true;
       document.getElementById('teacherFormTitle').textContent = create ? 'Buat Kelas Baru' : 'Masuk ke Kelas';
-      document.getElementById('teacherFormDesc').textContent = create ? 'Pilih sekolahmu dari daftar. Kode kelas sekolah akan dibagikan kepada siswa.' : 'Masukkan kode kelas yang sudah dibuat sebelumnya';
+      document.getElementById('teacherFormDesc').textContent = create ? 'Pilih sekolahmu dari daftar. Kode kelas sekolah akan dibagikan kepada siswa.' : 'Masukkan nama dan kode kelas yang sudah dibuat sebelumnya';
       document.getElementById('teacherClassSubmit').textContent = create ? 'Buat Kelas' : 'Masuk';
       document.getElementById('teacherFormSymbol').className = 'teacher-symbol ' + (create ? 'teacher-symbol-add' : 'teacher-symbol-key');
       document.getElementById('teacherFormSymbol').innerHTML = create ? '<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg>' : '<svg viewBox="0 0 24 24"><circle cx="15" cy="8" r="5"/><path d="m11 12-8 8v-4l3-3h3l2-2"/></svg>';
-      document.getElementById(create ? 'teacherName' : 'teacherClassCode').focus();
+      document.getElementById('teacherName').focus();
     }
     async function submitTeacherClass(event) {
       event.preventDefault();
@@ -1907,6 +1907,7 @@
       const examObj = {
         id: editId || 'ex_' + crypto.randomUUID(),
         classroomCode: selectedTeacherClass.code,
+        teacherKey: selectedTeacherClass.teacher_key,
         code: code,
         title: title,
         subject: subject,

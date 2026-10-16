@@ -36,6 +36,13 @@
       "when": 1792166262455,
       "tag": "0004_seed_bnw_school_classrooms",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792167298091,
+      "tag": "0005_teacher_scoped_classroom",
+      "breakpoints": true
     }
   ]
 }

@@ -24,7 +24,7 @@ declare global {
       request: (path: string, init?: RequestInit) => Promise<Response>;
       login: (code: string, role: string) => Promise<void>;
       logout: () => Promise<void>;
-      classroom: (input: { action: 'create' | 'join'; code: string; teacherName?: string; schoolName?: string }) => Promise<{ code: string; teacher_name: string; school_name: string }>;
+      classroom: (input: { action: 'create' | 'join'; code: string; teacherName?: string; schoolName?: string }) => Promise<{ code: string; teacher_name: string; school_name: string; teacher_key: string }>;
       saveExams: (exams: Record<string, unknown>[]) => Promise<void>;
       clearClassroom: () => void;
     };

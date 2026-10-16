@@ -3,6 +3,9 @@ import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { findSchoolByCode } from '@/lib/schools';
 
+/** Each teacher (by normalized name) gets an own account within a school classroom so reports stay separate. */
+export function teacherKeyOf(name: string) { return name.trim().toLowerCase().replace(/\s+/g, ' '); }
+
 export const enterClassroom = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({
@@ -12,12 +15,13 @@ export const enterClassroom = createServerFn({ method: 'POST' })
   .handler(async ({ data, context }) => {
     const { data: allowed, error: roleError } = await context.supabase.rpc('tka_has_role', { wanted: 'guru' });
     if (roleError || !allowed) throw new Error('Silakan masuk sebagai guru.');
+    if (!data.teacherName) throw new Error('Nama guru wajib diisi.');
+    const teacherKey = teacherKeyOf(data.teacherName);
     const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
     if (data.action === 'create') {
-      if (!data.teacherName) throw new Error('Nama guru wajib diisi.');
       const school = findSchoolByCode(data.code);
       if (!school) throw new Error('Pilih sekolah dari daftar.');
-      const { error } = await supabaseAdmin.from('teacher_classrooms').upsert({ code: data.code, teacher_name: data.teacherName, school_name: school });
+      const { error } = await supabaseAdmin.from('teacher_classrooms').upsert({ code: data.code, teacher_name: data.teacherName, school_name: school }, { onConflict: 'code', ignoreDuplicates: true });
       if (error) throw new Error('Kelas belum dapat disimpan.');
     }
     const { data: classroom, error } = await supabaseAdmin.from('teacher_classrooms').select('code,teacher_name,school_name').eq('code', data.code).single();
@@ -26,9 +30,10 @@ export const enterClassroom = createServerFn({ method: 'POST' })
     const url = process.env['SUPABASE_URL'];
     const key = process.env['SUPABASE_PUBLISHABLE_KEY'];
     if (!secret || !url || !key) throw new Error('Layanan kelas belum tersedia.');
-    const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`classroom:${data.code}:${secret}`));
+    const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`classroom:${data.code}:${teacherKey}:${secret}`));
     const password = 'A' + Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, '0')).join('') + '!';
-    const email = `class-${data.code.toLowerCase()}@akses.simulasitka.id`;
+    const keyHash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(teacherKey))), b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+    const email = `class-${data.code.toLowerCase()}-${keyHash}@akses.simulasitka.id`;
     const { createClient } = await import('@supabase/supabase-js');
     const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false }, global: { fetch: (input, init) => {
       const headers = new Headers(init?.headers);
@@ -45,14 +50,14 @@ export const enterClassroom = createServerFn({ method: 'POST' })
     const user = signIn.data.user;
     const session = signIn.data.session;
     if (!user || !session) throw new Error('Tidak dapat masuk ke kelas.');
-    const { error: accountError } = await supabaseAdmin.from('teacher_classroom_accounts').upsert({ user_id: user.id, classroom_code: data.code });
+    const { error: accountError } = await supabaseAdmin.from('teacher_classroom_accounts').upsert({ user_id: user.id, classroom_code: data.code, teacher_key: teacherKey });
     const { data: roles, error: readRoleError } = await supabaseAdmin.from('user_roles').select('id').eq('user_id', user.id).eq('role', 'guru');
     if (accountError || readRoleError) throw new Error('Akses kelas belum siap.');
     if (!roles?.length) {
       const { error: grantError } = await supabaseAdmin.from('user_roles').insert({ user_id: user.id, role: 'guru' });
       if (grantError) throw new Error('Akses kelas belum siap.');
     }
-    return { classroom, access_token: session.access_token, refresh_token: session.refresh_token };
+    return { classroom: { ...classroom, teacher_name: data.teacherName, teacher_key: teacherKey }, access_token: session.access_token, refresh_token: session.refresh_token };
   });
 
 export const saveClassroomExams = createServerFn({ method: 'POST' })

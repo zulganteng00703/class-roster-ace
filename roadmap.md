@@ -7,4 +7,7 @@
 - [x] Apply dynamic light/dark theme and persistent mode selector.
 - [x] Protect teacher/admin writes and private results using Cloud roles.
 - [x] Verify student flow, theme persistence, and database write/read.
-- [x] Set up teacher and administrator access using the owner's shared access codes.
+- [x] Set up teacher and administrator access using the owner's shared access codes.- [x] Replace logo with BATAMY logo (visible in both themes) and favicon.
+- [x] Import SDN 4 Banawa question bank (90 soal).
+- [x] Admin access code set.
+- [x] Separate reports per teacher within the same school.
