@@ -104,6 +104,10 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
             Reset Progres Siswa
           </button>
+          <button class="btn btn-danger btn-sm" onclick="resetAllClasses()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            Reset Kelas
+          </button>
         </div>
       </div>
 
@@ -201,11 +205,11 @@
       <form id="teacherClassForm" class="teacher-class-form" hidden onsubmit="submitTeacherClass(event)">
         <span id="teacherFormSymbol" class="teacher-symbol teacher-symbol-key"><svg viewBox="0 0 24 24"><circle cx="15" cy="8" r="5"/><path d="m11 12-8 8v-4l3-3h3l2-2"/></svg></span>
         <h3 id="teacherFormTitle">Masuk ke Kelas</h3><p id="teacherFormDesc">Masukkan kode kelas yang sudah dibuat sebelumnya</p>
-        <label class="sr-only" for="teacherName">Nama Guru</label><input class="form-control" id="teacherName" placeholder="Nama Guru" maxlength="200" required>
+        <label class="sr-only" for="teacherName">Nama Guru</label><input class="form-control" id="teacherName" placeholder="NAMA GURU (HURUF KAPITAL)" style="text-transform: uppercase;" oninput="this.value=this.value.toUpperCase()" maxlength="200" required>
         <div id="teacherCreateFields" hidden>
           <label class="sr-only" for="teacherSchool">Nama Sekolah</label><select class="form-control" id="teacherSchool"><option value="">Pilih Sekolah</option><option value="SDN1BNW">SDN 1 BNW</option><option value="SDN2BNW">SDN 2 BNW</option><option value="SDN3BNW">SDN 3 BNW</option><option value="SDN4BNW">SDN 4 BNW</option><option value="SDN5BNW">SDN 5 BNW</option><option value="SDN6BNW">SDN 6 BNW</option><option value="SDN7BNW">SDN 7 BNW</option><option value="SDN8BNW">SDN 8 BNW</option><option value="SDN9BNW">SDN 9 BNW</option><option value="SDN10BNW">SDN 10 BNW</option><option value="SDN11BNW">SDN 11 BNW</option><option value="SDN12BNW">SDN 12 BNW</option><option value="SDN13BNW">SDN 13 BNW</option><option value="SDN14BNW">SDN 14 BNW</option><option value="SDN15BNW">SDN 15 BNW</option><option value="SDN16BNW">SDN 16 BNW</option><option value="SDN17BNW">SDN 17 BNW</option><option value="SDN18BNW">SDN 18 BNW</option><option value="SDN19BNW">SDN 19 BNW</option><option value="SDN20BNW">SDN 20 BNW</option><option value="SDN22BNW">SDN 22 BNW</option><option value="SDN23BNW">SDN 23 BNW</option><option value="SDN24BNW">SDN 24 BNW</option><option value="SDN25BNW">SDN 25 BNW</option><option value="SDN26BNW">SDN 26 BNW</option><option value="SDYPPI">SD YPPI</option><option value="SDMUH1">SD MUH 1</option><option value="SDMUH2">SD MUH 2</option><option value="SDITIK">SDIT IK</option></select>
         </div>
-        <label class="sr-only" for="teacherClassCode">Kode kelas</label><input class="form-control teacher-code-input" id="teacherClassCode" placeholder="Masukkan kode kelas (contoh: SDN1BNW)" required pattern="[A-Za-z0-9]{4,12}" minlength="4" maxlength="12" autocomplete="off">
+        <label class="sr-only" for="teacherClassCode">Kode kelas</label><input class="form-control teacher-code-input" id="teacherClassCode" placeholder="Masukkan kode kelas (contoh: SDN4BNW)" required pattern="[A-Za-z0-9]{4,12}" minlength="4" maxlength="12" autocomplete="off">
         <p id="teacherClassError" class="teacher-error" role="alert" hidden></p>
         <div class="teacher-form-actions"><button type="button" class="btn teacher-switch" onclick="resetTeacherClass()">Kembali</button><button type="submit" class="btn btn-primary" id="teacherClassSubmit">Masuk</button></div>
       </form>
@@ -563,12 +567,16 @@
             </div>
             <div class="form-group">
               <label class="form-label">Kode Kelas / Token Ujian: <span style="color:var(--danger)">*</span></label>
-              <input type="text" class="form-control" id="sLoginCode" required maxlength="12" style="text-transform: uppercase; font-weight: 800; letter-spacing: 0;" placeholder="SDN1BNW">
+              <input type="text" class="form-control" id="sLoginCode" required maxlength="12" style="text-transform: uppercase; font-weight: 800; letter-spacing: 0;" placeholder="SDN4BNW">
             </div>
           </div>
           <div class="form-group">
+            <label class="form-label">Nama Guru: <span style="color:var(--danger)">*</span></label>
+            <input type="text" class="form-control" id="sLoginTeacher" required maxlength="200" style="text-transform: uppercase;" placeholder="Nama guru sesuai yang dibuat guru">
+          </div>
+          <div class="form-group">
             <label class="form-label">Asal Sekolah: <span style="color:var(--danger)">*</span></label>
-            <input type="text" class="form-control" id="sLoginSchool" required placeholder="Contoh: SDN 4 Banawa">
+            <input type="text" class="form-control" id="sLoginSchool" required placeholder="Contoh: SDN4BNW">
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div class="form-group">
@@ -900,7 +908,8 @@
 
   <!-- MANDATORY FOOTER -->
   <footer class="app-footer">
-    Dikembangkan oleh <span class="footer-highlight">Zulkifli, S.Pd., M.Pd</span> - SDN 4 Banawa
+    <div class="footer-title">BATAMY — Banawa TKA Academy</div>
+    <div>Dikembangkan oleh <span class="footer-highlight">Zulkifli, S.Pd., M.Pd</span> · SDN 4 Banawa</div>
   </footer>
 
   <script>
@@ -1126,7 +1135,7 @@
       button.disabled = true;
       document.getElementById('teacherClassError').hidden = true;
       try {
-        const classroom = await (await bridgeReady()).classroom({ action: teacherFormMode, code: teacherFormMode === 'create' ? document.getElementById('teacherSchool').value : document.getElementById('teacherClassCode').value.trim().toUpperCase(), teacherName: document.getElementById('teacherName').value.trim(), schoolName: document.getElementById('teacherSchool').selectedOptions[0]?.textContent || '' });
+        const classroom = await (await bridgeReady()).classroom({ action: teacherFormMode, code: teacherFormMode === 'create' ? document.getElementById('teacherSchool').value : document.getElementById('teacherClassCode').value.trim().toUpperCase(), teacherName: document.getElementById('teacherName').value.trim().toUpperCase(), schoolName: document.getElementById('teacherSchool').selectedOptions[0]?.textContent || '' });
         selectedTeacherClass = classroom;
         cloudCache[STORAGE_KEYS.RESULTS] = [];
         await cloudRefresh();
@@ -2161,6 +2170,20 @@
       );
     }
 
+    async function resetAllClasses() {
+      if (currentRole !== 'admin') { showToast('Fitur ini hanya tersedia untuk Admin.', 'error'); return; }
+      showCustomConfirm(
+        'Seluruh daftar ujian/kelas yang dibuat guru akan DIHAPUS PERMANEN. Bank soal dan hasil siswa tetap aman. Lanjutkan?',
+        'Reset Kelas',
+        async () => {
+          if (await cloudSaveKV(STORAGE_KEYS.EXAMS, [])) {
+            cloudCache[STORAGE_KEYS.EXAMS] = [];
+            showToast('Seluruh kelas berhasil direset.', 'success');
+          }
+        }
+      );
+    }
+
     function exportResultsToCSV() {
       const examFilter = document.getElementById('filterResultExam').value;
       const search = document.getElementById('searchResultStudent').value.toLowerCase().trim();
@@ -2321,15 +2344,16 @@
       const subject = document.getElementById('sLoginSubject').value;
       const pkgId = document.getElementById('sLoginPackage').value;
       const code = document.getElementById('sLoginCode').value.trim().toUpperCase();
+      const teacherKey = (document.getElementById('sLoginTeacher')?.value || '').trim().toLowerCase().replace(/\s+/g, ' ');
 
-      if (!name || !sClass || !school || !code) {
+      if (!name || !sClass || !school || !code || !teacherKey) {
         showToast('Seluruh formulir wajib diisi lengkap!', 'warning');
         return;
       }
 
       // Validate exam code against active teacher exams
       const exams = getStoredData(STORAGE_KEYS.EXAMS, []);
-      const matchedExam = exams.find(ex => (ex.classroomCode || ex.code) === code && ex.subject === subject && ex.packageId === pkgId && ex.status === 'OPEN');
+      const matchedExam = exams.find(ex => (ex.classroomCode || ex.code) === code && (ex.teacherKey || '') === teacherKey && ex.subject === subject && ex.packageId === pkgId && ex.status === 'OPEN');
 
       if (!matchedExam) {
         showCustomAlert(`Kode kelas <strong>"${escapeHTML(code)}"</strong> tidak ditemukan. Pastikan Anda memasukkan kode kelas yang diberikan oleh Guru dan pilih paket ujian yang sesuai.`, 'Kode Kelas Tidak Ditemukan');

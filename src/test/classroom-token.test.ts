@@ -41,10 +41,10 @@ describe('One classroom token for all exams', () => {
     const lookup = loginFn.slice(0, loginFn.indexOf('      if (!matchedExam)'));
     const exams = [
       { id: 'wrong-package', classroomCode: 'ZUL123', code: 'OLD1', subject: 'Matematika', packageId: 'other', status: 'OPEN' },
-      { id: 'correct', classroomCode: 'ZUL123', code: 'OLD2', subject: 'Matematika', packageId: 'math', status: 'OPEN' },
+      { id: 'correct', classroomCode: 'ZUL123', teacherKey: 'bu ani', code: 'OLD2', subject: 'Matematika', packageId: 'math', status: 'OPEN' },
     ];
     const find = (code: string) => runInNewContext(`${lookup}\nreturn matchedExam;\n}\nhandleStudentLogin({preventDefault(){}})`, {
-      document: { getElementById: (id: string) => ({ value: ({ sLoginName: 'Siswa', sLoginClass: '6A', sLoginSchool: 'Sekolah', sLoginSubject: 'Matematika', sLoginPackage: 'math', sLoginCode: code } as Record<string, string>)[id] }) },
+      document: { getElementById: (id: string) => ({ value: ({ sLoginName: 'Siswa', sLoginClass: '6A', sLoginSchool: 'Sekolah', sLoginTeacher: 'bu ani', sLoginSubject: 'Matematika', sLoginPackage: 'math', sLoginCode: code } as Record<string, string>)[id] }) },
       cloudRefresh: async () => {}, getStoredData: () => exams, STORAGE_KEYS: { EXAMS: 'exams' },
     });
     expect((await find('zul123')).id).toBe('correct');
