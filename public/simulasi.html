@@ -963,7 +963,7 @@
     async function cloudSaveKV(key, data) {
       try {
         if (key === STORAGE_KEYS.EXAMS && currentRole === 'guru') {
-          await (await bridgeReady()).saveExams(data.filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code && (ex.teacherKey || '') === selectedTeacherClass.teacher_key));
+          await (await bridgeReady()).saveExams(data.filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code && (ex.teacherKey || '') === (selectedTeacherClass.teacher_key || '')));
           return true;
         }
         const res = await cloudFetch(CLOUD_URL + '/app_kv?on_conflict=key', {
@@ -1063,7 +1063,7 @@
     let selectedTeacherClass = null;
     let teacherFormMode = 'join';
     function scopedTeacherExams() {
-      return getStoredData(STORAGE_KEYS.EXAMS, []).filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code && (ex.teacherKey || '') === selectedTeacherClass.teacher_key);
+      return getStoredData(STORAGE_KEYS.EXAMS, []).filter(ex => selectedTeacherClass && (ex.classroomCode || ex.code) === selectedTeacherClass.code && (ex.teacherKey || '') === (selectedTeacherClass.teacher_key || ''));
     }
     function scopedTeacherResults() {
       const ids = new Set(scopedTeacherExams().map(ex => ex.id));
