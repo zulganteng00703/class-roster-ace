@@ -13,6 +13,7 @@
 - Keep all simulation colors and layout rules in src/styles.css, shared with the iframe through the compiled stylesheet URL, so both theme modes use one design system.
 - Teacher/admin sign-in uses shared access codes stored as server secrets and checked only in a server function, which signs into a shared role account; never put access codes in client code.
 - Clone databases start without source records or auth identities; imports require explicit user-provided exports to avoid touching the original project.
+- Classroom creation picks from a fixed school list (src/lib/schools.ts, seeded in the database); each classroom code is the school name without spaces so the shared code format stays valid.
 - Teacher classroom entry issues a class-scoped role session; RLS limits result reads and an atomic database RPC merges only that classroom's exams, preventing cross-school mixing despite the shared initial teacher access code.
 - Exam records use unique IDs for identity and classroom codes for student entry; the atomic save RPC normalizes tokens to the selected classroom so multiple exams can share that token safely.
 - Teacher printing clones the student question shell and shares math rendering and package selection; print CSS uses the shared stylesheet and browser PDF printing to preserve appearance without screenshot slicing.
