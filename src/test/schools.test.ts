@@ -8,7 +8,8 @@ describe("school classrooms", () => {
   });
   it("maps school names to valid classroom codes", () => {
     expect(schoolCode("SDN 1 BNW")).toBe("SDN1BNW");
-    expect(findSchoolByCode("SDITIK")).toBe("SDIT IK");
+    expect(findSchoolByCode("SDIT")).toBe("SDIT IK");
+    expect(schoolCode("SDIT IK")).toBe("SDIT");
     for (const s of SCHOOLS) expect(schoolCode(s)).toMatch(/^[A-Z0-9]{4,12}$/);
   });
   it("rejects codes outside the list", () => {
