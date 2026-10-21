@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="/vendor/katex/katex.min.css">
   <script src="/vendor/katex/katex.min.js"></script>
   <link id="appStyles" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Righteous&display=swap">
 </head>
 <body>
   <header class="app-header">
@@ -815,6 +817,7 @@
       </div>
       <div class="modal-body" id="schoolMonitorBody"></div>
       <div class="modal-footer">
+        <button class="btn btn-danger" onclick="resetSchoolMonitor()">Reset Monitoring</button>
         <button class="btn btn-secondary" onclick="closeModal('schoolMonitorModal')">Tutup</button>
       </div>
     </div>
@@ -2194,8 +2197,10 @@
       body.innerHTML = '<p style="color: var(--text-muted);">Memuat data…</p>';
       openModal('schoolMonitorModal');
       await cloudRefresh();
-      const exams = cloudCache[STORAGE_KEYS.EXAMS] || [];
-      const results = cloudCache[STORAGE_KEYS.RESULTS] || [];
+      let since = 0;
+      try { const r = await cloudFetch('/app_kv?select=data&key=eq.tka_monitor_reset', { headers: cloudHeaders(), cache: 'no-store' }); const d = r.ok ? await r.json() : []; since = Number(d[0]?.data?.[0]) || 0; } catch (e) {}
+      const exams = (cloudCache[STORAGE_KEYS.EXAMS] || []).filter(e => (e.createdAt || 0) > since);
+      const results = (cloudCache[STORAGE_KEYS.RESULTS] || []).filter(r => r && (r.endTime || 0) > since);
       const fmt = t => t ? new Date(t).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
       let active = 0;
       const rows = MONITOR_SCHOOLS.map((name, i) => {
@@ -2209,7 +2214,7 @@
         const badge = used ? '<span style="color: var(--success); font-weight: 700;">Aktif</span>' : '<span style="color: var(--text-light);">Belum</span>';
         return `<tr><td>${i + 1}</td><td><strong>${escapeHTML(name)}</strong><div style="font-size:12px;color:var(--text-muted);">${code}</div></td><td>${badge}</td><td>${teachers.length ? escapeHTML(teachers.join(', ')) : '-'}</td><td style="text-align:center;">${ex.length}</td><td style="text-align:center;">${rs.length}</td><td>${last ? fmt(last) : '-'}</td></tr>`;
       }).join('');
-      body.innerHTML = `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+      body.innerHTML = (since ? `<p style="font-size:13px;color:var(--text-muted);margin-bottom:10px;">Dihitung sejak reset: ${fmt(since)}</p>` : '') + `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
           <div class="card" style="padding:12px 16px;border-left:4px solid var(--success);"><div style="font-size:12px;color:var(--text-muted);">Sekolah aktif</div><div style="font-size:1.4rem;font-weight:800;color:var(--success);">${active} / ${MONITOR_SCHOOLS.length}</div></div>
           <div class="card" style="padding:12px 16px;border-left:4px solid var(--primary);"><div style="font-size:12px;color:var(--text-muted);">Total ujian</div><div style="font-size:1.4rem;font-weight:800;color:var(--primary);">${exams.length}</div></div>
           <div class="card" style="padding:12px 16px;border-left:4px solid var(--info);"><div style="font-size:12px;color:var(--text-muted);">Total hasil siswa</div><div style="font-size:1.4rem;font-weight:800;color:var(--info);">${results.length}</div></div>
@@ -2217,6 +2222,13 @@
         <div style="overflow-x:auto;"><table class="data-table" style="width:100%;border-collapse:collapse;font-size:14px;">
           <thead><tr><th>No</th><th>Sekolah</th><th>Status</th><th>Guru</th><th>Ujian</th><th>Hasil Siswa</th><th>Aktivitas Terakhir</th></tr></thead>
           <tbody>${rows}</tbody></table></div>`;
+    }
+
+    function resetSchoolMonitor() {
+      if (currentRole !== 'admin') return;
+      showCustomConfirm('Hitungan monitoring akan dimulai dari nol. Ujian, hasil siswa, dan bank soal TIDAK dihapus. Lanjutkan?', 'Reset Monitoring', async () => {
+        if (await cloudSaveKV('tka_monitor_reset', [Date.now()])) { showToast('Monitoring berhasil direset.', 'success'); openSchoolMonitor(); }
+      });
     }
 
     async function resetAllClasses() {
