@@ -100,6 +100,10 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Tambah Soal Baru
           </button>
+          <button class="btn btn-outline btn-sm" onclick="openSchoolMonitor()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+            Monitoring Kelas
+          </button>
           <button class="btn btn-danger btn-sm" onclick="resetStudentProgress()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
             Reset Progres Siswa
@@ -799,6 +803,19 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('previewQuestionModal')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="schoolMonitorModal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; font-size: 1.15rem; color: var(--primary);">Monitoring Daftar Kelas Sekolah</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('schoolMonitorModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="schoolMonitorBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('schoolMonitorModal')">Tutup</button>
       </div>
     </div>
   </div>
@@ -2168,6 +2185,38 @@
           }
         }
       );
+    }
+
+    const MONITOR_SCHOOLS = ["SDN 1 BNW","SDN 2 BNW","SDN 3 BNW","SDN 4 BNW","SDN 5 BNW","SDN 6 BNW","SDN 7 BNW","SDN 8 BNW","SDN 9 BNW","SDN 10 BNW","SDN 11 BNW","SDN 12 BNW","SDN 13 BNW","SDN 14 BNW","SDN 15 BNW","SDN 16 BNW","SDN 17 BNW","SDN 18 BNW","SDN 19 BNW","SDN 20 BNW","SDN 22 BNW","SDN 23 BNW","SDN 24 BNW","SDN 25 BNW","SDN 26 BNW","SD YPPI","SD MUH 1","SD MUH 2","SDIT IK"];
+    async function openSchoolMonitor() {
+      if (currentRole !== 'admin') { showToast('Fitur ini hanya tersedia untuk Admin.', 'error'); return; }
+      const body = document.getElementById('schoolMonitorBody');
+      body.innerHTML = '<p style="color: var(--text-muted);">Memuat data…</p>';
+      openModal('schoolMonitorModal');
+      await cloudRefresh();
+      const exams = cloudCache[STORAGE_KEYS.EXAMS] || [];
+      const results = cloudCache[STORAGE_KEYS.RESULTS] || [];
+      const fmt = t => t ? new Date(t).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
+      let active = 0;
+      const rows = MONITOR_SCHOOLS.map((name, i) => {
+        const code = name.replace(/\s+/g, '').toUpperCase();
+        const ex = exams.filter(e => (e.classroomCode || e.code) === code);
+        const rs = results.filter(r => r && r.classroomCode === code);
+        const teachers = [...new Set(ex.map(e => (e.teacherName || '').trim().toUpperCase()).filter(Boolean))];
+        const last = Math.max(0, ...ex.map(e => e.createdAt || 0), ...rs.map(r => r.endTime || 0));
+        const used = ex.length > 0 || rs.length > 0;
+        if (used) active++;
+        const badge = used ? '<span style="color: var(--success); font-weight: 700;">Aktif</span>' : '<span style="color: var(--text-light);">Belum</span>';
+        return `<tr><td>${i + 1}</td><td><strong>${escapeHTML(name)}</strong><div style="font-size:12px;color:var(--text-muted);">${code}</div></td><td>${badge}</td><td>${teachers.length ? escapeHTML(teachers.join(', ')) : '-'}</td><td style="text-align:center;">${ex.length}</td><td style="text-align:center;">${rs.length}</td><td>${last ? fmt(last) : '-'}</td></tr>`;
+      }).join('');
+      body.innerHTML = `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+          <div class="card" style="padding:12px 16px;border-left:4px solid var(--success);"><div style="font-size:12px;color:var(--text-muted);">Sekolah aktif</div><div style="font-size:1.4rem;font-weight:800;color:var(--success);">${active} / ${MONITOR_SCHOOLS.length}</div></div>
+          <div class="card" style="padding:12px 16px;border-left:4px solid var(--primary);"><div style="font-size:12px;color:var(--text-muted);">Total ujian</div><div style="font-size:1.4rem;font-weight:800;color:var(--primary);">${exams.length}</div></div>
+          <div class="card" style="padding:12px 16px;border-left:4px solid var(--info);"><div style="font-size:12px;color:var(--text-muted);">Total hasil siswa</div><div style="font-size:1.4rem;font-weight:800;color:var(--info);">${results.length}</div></div>
+        </div>
+        <div style="overflow-x:auto;"><table class="data-table" style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead><tr><th>No</th><th>Sekolah</th><th>Status</th><th>Guru</th><th>Ujian</th><th>Hasil Siswa</th><th>Aktivitas Terakhir</th></tr></thead>
+          <tbody>${rows}</tbody></table></div>`;
     }
 
     async function resetAllClasses() {
